@@ -30,10 +30,10 @@ dependencies {
 
 	// lombok
 	compileOnly 'org.projectlombok:lombok'
-	annotationProcessor 'org.pr\n' +
-			'\truntimeOnly \'com.h2database:h2\'\t// 테스트용ojectlombok:lombok'
+	annotationProcessor 'org.projectlombok:lombok'
 
 	// db
+	runtimeOnly 'com.h2database:h2'	// 테스트용
 	runtimeOnly 'com.mysql:mysql-connector-j'
 
 	// jpa
