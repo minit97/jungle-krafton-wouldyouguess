@@ -86,6 +86,7 @@ fabric.properties
 
 .idea/*
 .vscode/*
+.gradle/*
 
 !.idea/codeStyles
 !.idea/runConfigurations
