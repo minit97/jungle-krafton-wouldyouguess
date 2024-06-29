@@ -9,6 +9,7 @@ import static jakarta.persistence.EnumType.STRING;
 
 @Entity
 @Getter
+@Table(name = "users")
 public class User {
 
     @Id @GeneratedValue
@@ -20,7 +21,7 @@ public class User {
     @Enumerated(STRING)
     private Game game;
 
-    @OneToMany(mappedBy = "player")
+    @OneToMany(mappedBy = "user")
     private List<Photo> photos;
 
     private int score;
