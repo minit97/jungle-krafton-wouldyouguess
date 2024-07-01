@@ -91,3 +91,4 @@ fabric.properties
 !.idea/codeStyles
 !.idea/runConfigurations
 .DS_Store
+docker-compose.yml
