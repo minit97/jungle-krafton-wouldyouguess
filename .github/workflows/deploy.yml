@@ -46,4 +46,4 @@ jobs:
           environment_name: Docker-springboot-env
           version_label: deploy-${{ github.sha }}
           region: ap-northeast-2
-          deployment_package: demo/docker-compose.yml
+          deployment_package: docker-compose.yml
