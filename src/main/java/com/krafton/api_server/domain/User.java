@@ -1,31 +1,27 @@
 package com.krafton.api_server.domain;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
-
-import java.util.List;
-
-import static jakarta.persistence.EnumType.STRING;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @Table(name = "users")
 public class User {
-
-    @Id @GeneratedValue
-    @Column(name = "user_id")
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String username;
+    private String email;
+    private String role;
 
-    @Enumerated(STRING)
-    private Game game;
-
-    @OneToMany(mappedBy = "user")
-    private List<Photo> photos;
-
-    private int score;
-
-    @Enumerated(STRING)
-    private Role role;
+    public User updateEmail(String newEmail) {
+        return new User(this.id, this.username, newEmail, this.role);
+    }
 }
