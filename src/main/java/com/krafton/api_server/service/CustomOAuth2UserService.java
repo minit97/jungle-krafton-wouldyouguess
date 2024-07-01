@@ -49,6 +49,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
                     .build();
 
             userRepository.save(user);
+
         } else {
 
             role = existData.getRole();
@@ -56,6 +57,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
             existData.updateEmail(oAuth2Response.getEmail());
 
             userRepository.save(existData);
+
         }
 
         return new CustomOAuth2User(oAuth2Response, role);

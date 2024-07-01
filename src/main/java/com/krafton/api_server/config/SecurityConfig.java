@@ -26,6 +26,12 @@ public class SecurityConfig {
                         .loginPage("/login")
                         .userInfoEndpoint((userInfoEndpointConfig ->
                                 userInfoEndpointConfig.userService(customOAuth2UserService))))
+                .logout(logout -> logout
+                        .logoutSuccessUrl("/")
+                        .permitAll()
+                        .deleteCookies("JSESSIONID")
+                        .clearAuthentication(true)
+                        .invalidateHttpSession(true))
                 .authorizeHttpRequests((auth) -> auth
                         .requestMatchers("/", "/oauth2/**", "/login/**").permitAll()
                         .anyRequest().authenticated()
