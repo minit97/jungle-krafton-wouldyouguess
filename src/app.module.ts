@@ -1,10 +1,17 @@
-import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
+import {MiddlewareConsumer, Module, NestModule} from '@nestjs/common';
+import {ConfigModule, ConfigService} from "@nestjs/config";
+import {AppController} from './app.controller';
+import {AppService} from './app.service';
+import {LoggerMiddleware} from "./middlewares/logger.middlewares";
+import {EventsModule} from './events/events.module';
 
 @Module({
-  imports: [],
+  imports: [ConfigModule.forRoot({ isGlobal: true }), EventsModule],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, ConfigService],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer): any {
+    consumer.apply(LoggerMiddleware).forRoutes('*');
+  }
+}
