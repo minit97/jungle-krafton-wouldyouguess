@@ -10,6 +10,6 @@ export class AppService {
   getHello(): string {
     return this.configService.get("SECRET");
     // return process.env.SECRET;
-    // return 'Hello World!';
+    return 'Hello World!';
   }
 }
