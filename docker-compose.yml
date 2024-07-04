@@ -1,0 +1,7 @@
+version: "3.8"
+services:
+  springboot:
+    image: "minit97/nestjs-demo"
+    ports:
+      - "80:3000"
+    restart: "always"
