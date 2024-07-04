@@ -1,4 +1,4 @@
-package com.krafton.api_server.dto;
+package com.krafton.api_server.oauth;
 
 public interface OAuth2Response {
 
