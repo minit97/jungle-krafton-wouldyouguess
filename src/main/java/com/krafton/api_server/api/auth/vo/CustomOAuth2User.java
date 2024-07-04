@@ -1,5 +1,6 @@
-package com.krafton.api_server.oauth;
+package com.krafton.api_server.api.auth.vo;
 
+import com.krafton.api_server.api.auth.dto.OAuth2Response;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.oauth2.core.user.OAuth2User;

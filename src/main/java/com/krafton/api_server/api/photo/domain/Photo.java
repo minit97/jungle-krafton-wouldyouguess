@@ -1,5 +1,7 @@
-package com.krafton.api_server.domain;
+package com.krafton.api_server.api.photo.domain;
 
+import com.krafton.api_server.api.auth.domain.User;
+import com.krafton.api_server.api.game.domain.Game;
 import jakarta.persistence.*;
 import lombok.Getter;
 import java.io.File;

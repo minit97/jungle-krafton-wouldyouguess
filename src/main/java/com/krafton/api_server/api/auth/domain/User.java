@@ -1,4 +1,4 @@
-package com.krafton.api_server.domain;
+package com.krafton.api_server.api.auth.domain;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

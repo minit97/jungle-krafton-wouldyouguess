@@ -1,4 +1,4 @@
-package com.krafton.api_server.api;
+package com.krafton.api_server.api.auth.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -7,15 +7,17 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.HashMap;
 import java.util.Map;
 
 @RestController
+@RequestMapping("/api")
 public class LoginApiController {
 
-    @GetMapping("/api/login")
+    @GetMapping("/login")
     public ResponseEntity<?> loginStatus(Authentication authentication) {
         Map<String, Object> response = new HashMap<>();
         if (authentication != null && authentication.isAuthenticated()) {
@@ -27,7 +29,7 @@ public class LoginApiController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/api/logout")
+    @GetMapping("/logout")
     public ResponseEntity<?> logout(HttpServletRequest request, HttpServletResponse response) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         Map<String, String> responseBody = new HashMap<>();

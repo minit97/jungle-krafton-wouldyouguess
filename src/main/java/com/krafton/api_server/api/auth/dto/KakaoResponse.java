@@ -1,4 +1,4 @@
-package com.krafton.api_server.oauth;
+package com.krafton.api_server.api.auth.dto;
 
 import java.util.Map;
 

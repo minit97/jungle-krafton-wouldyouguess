@@ -1,7 +1,10 @@
-package com.krafton.api_server.oauth;
+package com.krafton.api_server.api.auth.service;
 
-import com.krafton.api_server.domain.User;
-import com.krafton.api_server.repository.UserRepository;
+import com.krafton.api_server.api.auth.domain.User;
+import com.krafton.api_server.api.auth.dto.KakaoResponse;
+import com.krafton.api_server.api.auth.dto.OAuth2Response;
+import com.krafton.api_server.api.auth.repository.UserRepository;
+import com.krafton.api_server.api.auth.vo.CustomOAuth2User;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

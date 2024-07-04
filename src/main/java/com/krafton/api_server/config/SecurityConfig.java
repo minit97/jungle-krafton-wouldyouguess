@@ -1,6 +1,6 @@
 package com.krafton.api_server.config;
 
-import com.krafton.api_server.oauth.CustomOAuth2UserService;
+import com.krafton.api_server.api.auth.service.CustomOAuth2UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
