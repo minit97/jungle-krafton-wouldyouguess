@@ -32,16 +32,12 @@ public class KakaoUserInfo {
 
         @Getter
         @NoArgsConstructor
-        @JsonIgnoreProperties(ignoreUnknown = true)
         public static class Profile {
 
-            @JsonProperty("nickname")
-            public String nickName;
+            public String username;
 
-            @JsonProperty("thumbnail_image_url")
             public String thumbnailImageUrl;
 
-            @JsonProperty("profile_image_url")
             public String profileImageUrl;
 
         }

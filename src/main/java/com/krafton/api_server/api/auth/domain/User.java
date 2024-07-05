@@ -13,7 +13,6 @@ import static jakarta.persistence.FetchType.*;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
 @Table(name = "users")
 public class User {
     @Id

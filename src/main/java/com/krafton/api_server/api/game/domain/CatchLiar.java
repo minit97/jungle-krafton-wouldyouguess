@@ -5,7 +5,7 @@ import jakarta.persistence.Entity;
 
 @Entity
 public class CatchLiar extends Game {
-    private User liar;
+//    private User liar;
 
 
 

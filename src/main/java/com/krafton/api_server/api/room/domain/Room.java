@@ -9,6 +9,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static jakarta.persistence.CascadeType.ALL;
@@ -23,7 +24,7 @@ public class Room {
     private Long id;
 
     @OneToMany(mappedBy = "room", cascade = ALL, orphanRemoval = true)
-    private List<User> userList;
+    private List<User> userList = new ArrayList<>();
 
     @OneToOne
     private Game game;

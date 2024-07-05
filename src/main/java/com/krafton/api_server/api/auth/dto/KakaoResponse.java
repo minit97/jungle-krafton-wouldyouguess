@@ -10,18 +10,15 @@ import lombok.NoArgsConstructor;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class KakaoResponse {
 
-    @JsonProperty("token_type")
+    public Long id;
+    public String username;
+    public String email;
+
     public String tokenType;
-    @JsonProperty("access_token")
     public String accessToken;
-    @JsonProperty("id_token")
     public String idToken;
-    @JsonProperty("expires_in")
     public Integer expiresIn;
-    @JsonProperty("refresh_token")
     public String refreshToken;
-    @JsonProperty("refresh_token_expires_in")
     public Integer refreshTokenExpiresIn;
-    @JsonProperty("scope")
     public String scope;
 }
