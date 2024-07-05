@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-public class LoginApiController {
+public class AuthController {
 
     private final KakaoService kakaoService;
     @GetMapping("/login/oauth2/code/kakao")
