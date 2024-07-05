@@ -21,7 +21,4 @@ public class User {
     private String email;
     private String role;
 
-    public User updateEmail(String newEmail) {
-        return new User(this.id, this.username, newEmail, this.role);
-    }
 }

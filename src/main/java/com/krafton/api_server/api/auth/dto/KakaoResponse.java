@@ -1,34 +1,27 @@
 package com.krafton.api_server.api.auth.dto;
 
-import java.util.Map;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
-public class KakaoResponse implements OAuth2Response {
+@Getter
+@NoArgsConstructor
+@JsonIgnoreProperties(ignoreUnknown = true)
+public class KakaoResponse {
 
-    private final Map<String, Object> attribute;
-
-    public KakaoResponse(Map<String, Object> attribute) {
-        this.attribute = attribute;
-    }
-
-    @Override
-    public String getProvider() {
-        return "kakao";
-    }
-
-    @Override
-    public String getProviderId() {
-        return String.valueOf(attribute.get("id"));
-    }
-
-    @Override
-    public String getEmail() {
-        Map<String, Object> kakaoAccount = (Map<String, Object>) attribute.get("kakao_account");
-        return kakaoAccount != null ? (String) kakaoAccount.get("email") : null;
-    }
-
-    @Override
-    public String getName() {
-        Map<String, Object> properties = (Map<String, Object>) attribute.get("properties");
-        return properties != null ? (String) properties.get("nickname") : null;
-    }
+    @JsonProperty("token_type")
+    public String tokenType;
+    @JsonProperty("access_token")
+    public String accessToken;
+    @JsonProperty("id_token")
+    public String idToken;
+    @JsonProperty("expires_in")
+    public Integer expiresIn;
+    @JsonProperty("refresh_token")
+    public String refreshToken;
+    @JsonProperty("refresh_token_expires_in")
+    public Integer refreshTokenExpiresIn;
+    @JsonProperty("scope")
+    public String scope;
 }

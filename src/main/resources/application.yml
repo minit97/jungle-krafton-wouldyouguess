@@ -24,13 +24,14 @@ spring:
         registration:
           kakao:
             client-name: kakao
-            client-id: f261b17a6bcf242feb3f6d760cb13726
-            client-secret: 2y43lNC1UQg9zI93M4fG39RLZ4xwRPDa
+            client-id: 6484bad6b0521f31f7fca78c30752386
+            client-secret: KXpCbKAGWDXsWsBs5BeNTv4NGsvn9FMQ
             redirect-uri: "http://localhost:8080/login/oauth2/code/kakao"
             authorization-grant-type: authorization_code
             client-authentication-method: client_secret_post
             scope:
               - profile_nickname
+              - profile_image
               - account_email
         provider:
           kakao:
