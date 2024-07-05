@@ -41,6 +41,15 @@ dependencies {
 
 	// Swagger(Spring 3.x.x 이상부터 SpringFox 대신, SpringDoc)
 	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.2'
+
+	// Spring Security
+	implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
+	implementation 'org.springframework.boot:spring-boot-starter-security'
+
+	//Webflux
+	implementation 'org.springframework.boot:spring-boot-starter-webflux'
+
+
 }
 
 tasks.named('test') {
