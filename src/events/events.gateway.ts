@@ -38,7 +38,7 @@ export class EventsGateway implements OnGatewayInit, OnGatewayConnection, OnGate
   }
 
   // connection 후 콜백 함수
-  @SubscribeMessage('connenct_check')
+  @SubscribeMessage('room_create')
   handleConnectCheck(@MessageBody() message:string) {
     this.logger.log(message);
   }
@@ -56,6 +56,7 @@ export class EventsGateway implements OnGatewayInit, OnGatewayConnection, OnGate
     this.logger.log(message);
   }
 
+  //fixme 필요한가??
   @SubscribeMessage('game_end')
   handleGameEnd(@MessageBody() message:string) {
     this.logger.log(message);
@@ -65,13 +66,13 @@ export class EventsGateway implements OnGatewayInit, OnGatewayConnection, OnGate
   @SubscribeMessage('drawer_draw_start')
   handleDrawerDrawStart(@MessageBody() data: PointData[],  @ConnectedSocket() client: Socket): void {
     // 여기서 받은 좌표를 처리합니다.
-    client.broadcast.emit('start_coordinates1', data);
+    client.broadcast.emit('drawer_draw_start', data);
   }
 
   @SubscribeMessage('drawer_draw_move')
-  handleDrawerDrawMove(@MessageBody() data: PointData[],  @ConnectedSocket() client: Socket): void {
+  handleDrawerDrawMove(@MessageBody() data: number[],  @ConnectedSocket() client: Socket): void {
     // 여기서 받은 좌표를 처리합니다.
-    client.broadcast.emit('coordinates1', data);
+    client.broadcast.emit('drawer_draw_move', data);
   }
 
   //todo 후작업 : watcher(socketId or userId 판별)들에게만 보이는 레이저 포인터 생성 - 클라에서 삭제 로직
@@ -86,3 +87,4 @@ export class EventsGateway implements OnGatewayInit, OnGatewayConnection, OnGate
   //
   // }
 }
+
