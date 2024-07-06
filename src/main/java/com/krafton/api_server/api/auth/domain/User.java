@@ -2,12 +2,9 @@ package com.krafton.api_server.api.auth.domain;
 
 import com.krafton.api_server.api.room.domain.Room;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
-import static jakarta.persistence.FetchType.*;
+import static jakarta.persistence.FetchType.LAZY;
 
 @Entity
 @Getter
@@ -19,8 +16,9 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String username;
+    private String kakaoId;
     private String email;
+    private String nickname;
     private Role role;  // 시작 여부
 
 
@@ -28,4 +26,16 @@ public class User {
     @JoinColumn(name = "room_id")
     private Room room;
 
+    @Builder
+    public User(String kakaoId, String email, String nickname) {
+        this.kakaoId = kakaoId;
+        this.email = email;
+        this.nickname = nickname;
+    }
+
+    public void update(String kakaoId, String email, String nickname) {
+        this.kakaoId = kakaoId;
+        this.email = email;
+        this.nickname = nickname;
+    }
 }
