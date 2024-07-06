@@ -22,14 +22,14 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class AuthController {
 
-    @GetMapping("/loginSuccess")
+    @GetMapping("/login/success")
     public ResponseEntity<?> loginSuccess(@AuthenticationPrincipal CustomOAuth2User customOAuth2User, HttpSession session) {
         User user = customOAuth2User.getUser();
         session.setAttribute("user", user);
         return ResponseEntity.ok(Map.of("message", "Login successful", "user", user));
     }
 
-    @GetMapping("/loginFailure")
+    @GetMapping("/login/fail")
     public String loginFailure() {
         return "redirect:/login";
     }

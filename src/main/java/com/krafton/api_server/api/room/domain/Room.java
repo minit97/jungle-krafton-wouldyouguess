@@ -2,7 +2,6 @@ package com.krafton.api_server.api.room.domain;
 
 import com.krafton.api_server.api.auth.domain.User;
 import com.krafton.api_server.api.game.domain.Game;
-import com.krafton.api_server.api.game.domain.GameType;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -11,8 +10,6 @@ import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static jakarta.persistence.CascadeType.ALL;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -23,12 +20,27 @@ public class Room {
     @Column(name = "room_id")
     private Long id;
 
-    @OneToMany(mappedBy = "room", cascade = ALL, orphanRemoval = true)
-    private List<User> userList = new ArrayList<>();
+    @OneToOne
+    private User creater;
+
+    @OneToMany(mappedBy = "room")
+    private List<User> participants = new ArrayList<>();
 
     @OneToOne
     private Game game;
 
+    @Builder
+    public Room(User creater) {
+        this.creater = creater;
+    }
+
+    public void joinRoom(User user) {
+        this.participants.add(user);
+    }
+
+    public void exitRoom(User user) {
+        this.participants.remove(user);
+    }
 }
 
 
