@@ -10,6 +10,7 @@ import static jakarta.persistence.FetchType.LAZY;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 @Table(name = "users")
 public class User {
     @Id
@@ -20,22 +21,24 @@ public class User {
     private String email;
     private String nickname;
     private Role role;  // 시작 여부
+    @Builder.Default
+    private Long totalPoint = 0L;
+    @Setter
+    private Long rank;
 
 
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "room_id")
     private Room room;
 
-    @Builder
-    public User(String kakaoId, String email, String nickname) {
-        this.kakaoId = kakaoId;
-        this.email = email;
-        this.nickname = nickname;
-    }
-
     public void update(String kakaoId, String email, String nickname) {
         this.kakaoId = kakaoId;
         this.email = email;
         this.nickname = nickname;
     }
+
+    public void addPoint(Long point) {
+        this.totalPoint += point;
+    }
+
 }
