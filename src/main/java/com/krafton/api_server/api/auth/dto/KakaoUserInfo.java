@@ -21,26 +21,12 @@ public class KakaoUserInfo {
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static class KakaoAccount {
 
-        @JsonProperty("profile")
-        public Profile profile;
-
         @JsonProperty("name")
         public String name;
 
         @JsonProperty("email")
         public String email;
 
-        @Getter
-        @NoArgsConstructor
-        public static class Profile {
-
-            public String username;
-
-            public String thumbnailImageUrl;
-
-            public String profileImageUrl;
-
-        }
     }
 
 }
