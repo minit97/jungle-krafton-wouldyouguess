@@ -1,6 +1,7 @@
 package com.krafton.api_server.config;
 
 import com.krafton.api_server.api.auth.service.KakaoService;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -28,13 +29,24 @@ public class SecurityConfig {
                                 .userService(kakaoService)
                         )
                         .successHandler((request, response, authentication) -> {
-                            // 인증 성공 후 처리
                             response.sendRedirect("/loginSuccess");
                         })
                         .failureHandler((request, response, exception) -> {
-                            // 인증 실패 후 처리
                             response.sendRedirect("/loginFailure");
                         })
+                )
+                .sessionManagement(session -> session
+                    .maximumSessions(1)
+                    .maxSessionsPreventsLogin(false)
+                )
+                .logout(logout -> logout
+                        .logoutUrl("/")
+                        .logoutSuccessHandler((request, response, authentication) -> {
+                            response.setStatus(HttpServletResponse.SC_OK);
+                        })
+                        .invalidateHttpSession(true)
+                        .clearAuthentication(true)
+                        .deleteCookies("JSESSIONID")
                 );
 
         return http.build();
