@@ -1,4 +1,11 @@
 spring:
+  servlet:
+    multipart: # multipart 업로드 위한 설정
+      enabled: true
+      file-size-threshold: 0B
+      max-file-size: 100MB
+      max-request-size: 100MB
+
   h2:
     console:
       enabled: true
