@@ -7,6 +7,7 @@ import com.krafton.api_server.api.room.repository.RoomRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.NoSuchElementException;
 
@@ -14,6 +15,7 @@ import static com.krafton.api_server.api.room.dto.RoomRequest.RoomCreateRequest;
 
 @Slf4j
 @RequiredArgsConstructor
+@Transactional
 @Service
 public class RoomService {
 
@@ -23,17 +25,13 @@ public class RoomService {
     public Long createRoom(RoomCreateRequest roomCreateRequest) {
         User user = userRepository.findById(roomCreateRequest.getUserId())
                 .orElseThrow(NoSuchElementException::new);
+
         Room room = Room.builder()
-                .creater(user)
+                .user(user)
                 .build();
+
         Room createdRoom = roomRepository.save(room);
         return createdRoom.getId();
-    }
-
-    public void deleteRoom(Long roomId) {
-        Room room = roomRepository.findById(roomId)
-                .orElseThrow(NoSuchElementException::new);
-        roomRepository.delete(room);
     }
 
     public void joinRoom(Long roomId, RoomCreateRequest roomCreateRequest) {
@@ -51,10 +49,11 @@ public class RoomService {
         User exitedUser = userRepository.findById(roomCreateRequest.getUserId())
                 .orElseThrow(NoSuchElementException::new);
 
-        if(room.getCreater().equals(exitedUser)) {
-            deleteRoom(roomId);
-        } else {
-            room.exitRoom(exitedUser);
+        room.exitRoom(exitedUser);
+        if (room.getParticipants().size() == 0) {
+            roomRepository.delete(room);
         }
+
     }
+
 }

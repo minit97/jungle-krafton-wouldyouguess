@@ -19,8 +19,6 @@ public class User {
     private String kakaoId;
     private String email;
     private String nickname;
-    private Role role;  // 시작 여부
-
 
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "room_id")
@@ -37,5 +35,9 @@ public class User {
         this.kakaoId = kakaoId;
         this.email = email;
         this.nickname = nickname;
+    }
+
+    public void enteredRoom(Room room) {
+        this.room = room;
     }
 }

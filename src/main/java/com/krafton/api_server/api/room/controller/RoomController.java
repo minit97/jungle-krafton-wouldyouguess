@@ -22,11 +22,6 @@ public class RoomController {
         return ResponseEntity.ok(roomId);
     }
 
-    @DeleteMapping("/room/{roomId}")
-    public void callDeleteRoom(@PathVariable Long roomId) {
-        roomService.deleteRoom(roomId);
-    }
-
     @PostMapping("/room/{roomId}/join")
     public void callJoinRoom(@PathVariable Long roomId, @RequestBody RoomCreateRequest roomCreateRequest) {
         roomService.joinRoom(roomId, roomCreateRequest);
