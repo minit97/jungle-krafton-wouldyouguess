@@ -10,20 +10,17 @@ import static jakarta.persistence.FetchType.LAZY;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
 @Table(name = "users")
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "user_id")
     private Long id;
 
     private Long kakaoId;
     private String username;
     private String nickname;
-
-    @Builder.Default
-    private Long totalPoint = 0L;
-    @Setter
+    private Long totalPoint;
     private Long rank;
 
     private String refreshToken;
@@ -32,6 +29,17 @@ public class User {
     @JoinColumn(name = "room_id")
     private Room room;
 
+    @Builder
+    public User(Long kakaoId, String username) {
+        this.kakaoId = kakaoId;
+        this.username = username;
+        this.totalPoint = 0L;
+    }
+
+    public void setRank(Long rank) {
+        this.rank = rank;
+    }
+
     public void addPoint(Long point) {
         this.totalPoint += point;
     }
@@ -39,5 +47,6 @@ public class User {
     public void enteredRoom(Room room) {
         this.room = room;
     }
+
 
 }
