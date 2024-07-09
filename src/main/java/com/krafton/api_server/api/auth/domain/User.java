@@ -20,6 +20,7 @@ public class User {
     private Long kakaoId;
     private String username;
     private String nickname;
+
     private Role role;  // 시작 여부
     @Builder.Default
     private Long totalPoint = 0L;
@@ -34,6 +35,10 @@ public class User {
 
     public void addPoint(Long point) {
         this.totalPoint += point;
+    }
+
+    public void enteredRoom(Room room) {
+        this.room = room;
     }
 
 }
