@@ -1,14 +1,16 @@
 package com.krafton.api_server.api.game.controller;
 
+import com.krafton.api_server.api.game.dto.CatchLiarInfoResponseDto;
 import com.krafton.api_server.api.game.service.CatchLiarService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
-import static com.krafton.api_server.api.game.dto.CatchLiarRequest.catchLiarKeywordRequest;
+import java.util.List;
+
+import static com.krafton.api_server.api.game.dto.CatchLiarRequest.*;
+import static com.krafton.api_server.api.game.dto.CatchLiarRequest.CatchLiarInfoRequestDto;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -18,28 +20,32 @@ public class CatchLiarController {
 
     private final CatchLiarService catchLiarService;
 
-    @GetMapping("/catchLiar/keyword")
-    public void callCatchLiarKeyword(catchLiarKeywordRequest request) {
-        catchLiarService.catchLiarKeyword(request);
+    @GetMapping("/catchLiar/start")
+    public ResponseEntity<Long> callCatchLiarStart(Long roomId) {
+        Long gameId = catchLiarService.catchLiarStart(roomId);
+        return ResponseEntity.ok(gameId);
     }
 
-    @GetMapping("/catchLiar/role")
-    public void callCatchLiarRole() {
-        catchLiarService.catchLiarRole();
+    @GetMapping("/catchLiar/info")
+    public ResponseEntity<CatchLiarInfoResponseDto> callCatchLiarKeyword(CatchLiarInfoRequestDto request) {
+        CatchLiarInfoResponseDto response = catchLiarService.catchLiarInfo(request);
+        return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/catchLiar/vote")
-    public void callCatchLiarVoteCandidate() {
-        catchLiarService.catchLiarVoteCandidate();
+    @GetMapping("/catchLiar/candidates")
+    public ResponseEntity<List<Long>> callCatchLiarCandidates(Long catchLiarGameId) {
+        List<Long> result = catchLiarService.catchLiarVoteCandidates(catchLiarGameId);
+        return ResponseEntity.ok(result);
     }
 
     @PostMapping("/catchLiar/vote")
-    public void callCatchLiarVote() {
-        catchLiarService.catchLiarVote();
+    public void callCatchLiarVote(@RequestBody CatchLiarVoteRequestDto request) {
+        catchLiarService.catchLiarVote(request);
     }
 
     @GetMapping("/catchLiar/result")
-    public void callCatchLiarResult() {
-        catchLiarService.catchLiarResult();
+    public ResponseEntity<String> callCatchLiarResult(CatchLiarResultRequestDto request) {
+        String result = catchLiarService.catchLiarResult(request);
+        return ResponseEntity.ok(result);
     }
 }

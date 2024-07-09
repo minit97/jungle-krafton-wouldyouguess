@@ -21,7 +21,6 @@ public class User {
     private String username;
     private String nickname;
 
-    private Role role;  // 시작 여부
     @Builder.Default
     private Long totalPoint = 0L;
     @Setter
