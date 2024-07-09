@@ -17,8 +17,8 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String kakaoId;
-    private String email;
+    private Long kakaoId;
+    private String username;
     private String nickname;
     private Role role;  // 시작 여부
     @Builder.Default
@@ -26,16 +26,11 @@ public class User {
     @Setter
     private Long rank;
 
+    private String refreshToken;
 
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "room_id")
     private Room room;
-
-    public void update(String kakaoId, String email, String nickname) {
-        this.kakaoId = kakaoId;
-        this.email = email;
-        this.nickname = nickname;
-    }
 
     public void addPoint(Long point) {
         this.totalPoint += point;

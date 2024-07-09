@@ -24,7 +24,7 @@ public class UserService {
     }
 
     public void addPoint(Long point) {
-        String kakaoId = getUser().getKakaoId();
+        Long kakaoId = getUser().getKakaoId();
         Optional<User> userOptional = userRepository.findByKakaoId(kakaoId);
         if (userOptional.isPresent()) {
             User user = userOptional.get();
