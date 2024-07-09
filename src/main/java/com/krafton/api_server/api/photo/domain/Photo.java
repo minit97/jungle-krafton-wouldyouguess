@@ -4,6 +4,7 @@ import com.krafton.api_server.api.auth.domain.User;
 import com.krafton.api_server.api.game.domain.GameType;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 

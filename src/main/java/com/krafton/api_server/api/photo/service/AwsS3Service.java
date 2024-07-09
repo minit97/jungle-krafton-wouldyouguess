@@ -1,5 +1,6 @@
 package com.krafton.api_server.api.photo.service;
 
+import com.amazonaws.SdkClientException;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.AmazonS3Exception;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
@@ -64,10 +65,15 @@ public class AwsS3Service {
         return dirName + "/" + UUID.randomUUID() + file.getName();
     }
 
-    public void remove(AwsS3 awsS3) {
-        if (!amazonS3.doesObjectExist(bucket, awsS3.getKey())) {
-            throw new AmazonS3Exception("Object " +awsS3.getKey()+ " does not exist!");
+    public void delete(String key) {
+        try {
+            if (!amazonS3.doesObjectExist(bucket, key)) {
+                throw new AmazonS3Exception("Object " + key + " does not exist!");
+            }
+            amazonS3.deleteObject(bucket, key);
+        } catch (SdkClientException e) {
+            log.error("Error deleting file from S3: {}", e.getMessage());
+            throw e;
         }
-        amazonS3.deleteObject(bucket, awsS3.getKey());
     }
 }
