@@ -20,9 +20,9 @@ public class CatchLiarController {
 
     private final CatchLiarService catchLiarService;
 
-    @GetMapping("/catchLiar/start")
-    public ResponseEntity<Long> callCatchLiarStart(Long roomId) {
-        Long gameId = catchLiarService.catchLiarStart(roomId);
+    @PostMapping("/catchLiar/start")
+    public ResponseEntity<Long> callCatchLiarStart(@RequestBody CatchLiarStartRequestDto request) {
+        Long gameId = catchLiarService.catchLiarStart(request);
         return ResponseEntity.ok(gameId);
     }
 

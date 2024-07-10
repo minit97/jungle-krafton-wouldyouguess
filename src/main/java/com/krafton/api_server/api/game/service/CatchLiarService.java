@@ -2,7 +2,6 @@ package com.krafton.api_server.api.game.service;
 
 
 import com.krafton.api_server.api.auth.domain.User;
-import com.krafton.api_server.api.auth.repository.UserRepository;
 import com.krafton.api_server.api.game.domain.CatchLiarGame;
 import com.krafton.api_server.api.game.domain.CatchLiarKeyword;
 import com.krafton.api_server.api.game.domain.CatchLiarUser;
@@ -29,14 +28,13 @@ import static com.krafton.api_server.api.game.dto.CatchLiarRequest.CatchLiarInfo
 @Service
 public class CatchLiarService {
 
-    private UserRepository userRepository;
-    private RoomRepository roomRepository;
-    private CatchLiarGameRepository catchLiarGameRepository;
-    private CatchLiarKeywordRepository catchLiarKeywordRepository;
-    private CatchLiarUserRepository catchLiarUserRepository;
+    private final RoomRepository roomRepository;
+    private final CatchLiarGameRepository catchLiarGameRepository;
+    private final CatchLiarKeywordRepository catchLiarKeywordRepository;
+    private final CatchLiarUserRepository catchLiarUserRepository;
 
-    public Long catchLiarStart(Long roomId) {
-        Room room = roomRepository.findById(roomId)
+    public Long catchLiarStart(CatchLiarStartRequestDto request) {
+        Room room = roomRepository.findById(request.getRoomId())
                 .orElseThrow(NoSuchElementException::new);
 
         if (room.getParticipants().isEmpty()) {
@@ -135,7 +133,5 @@ public class CatchLiarService {
             return gameResult ? "승리" : "패배";
         }
     }
-
-
 
 }

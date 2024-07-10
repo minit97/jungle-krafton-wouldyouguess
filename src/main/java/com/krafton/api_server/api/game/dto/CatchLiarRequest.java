@@ -3,6 +3,11 @@ package com.krafton.api_server.api.game.dto;
 import lombok.Getter;
 
 public class CatchLiarRequest {
+    @Getter
+    public static class CatchLiarStartRequestDto {
+        private Long roomId;
+    }
+
 
     @Getter
     public static class CatchLiarInfoRequestDto {

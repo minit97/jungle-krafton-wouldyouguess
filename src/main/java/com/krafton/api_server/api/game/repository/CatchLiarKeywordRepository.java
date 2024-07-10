@@ -6,6 +6,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 public interface CatchLiarKeywordRepository extends JpaRepository<CatchLiarKeyword, Long> {
-    @Query(value = "SELECT * FROM CatchLiarKeyword ORDER BY RAND() LIMIT 1", nativeQuery = true)
+    @Query(value = "SELECT * FROM CATCH_LIAR_KEYWORD ORDER BY RAND() LIMIT 1", nativeQuery = true)
     CatchLiarKeyword findRandomCatchLiarKeyword();
 }
