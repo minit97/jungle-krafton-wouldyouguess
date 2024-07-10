@@ -27,9 +27,15 @@ public class RoomController {
         roomService.joinRoom(roomId, roomCreateRequest);
     }
 
-    @PostMapping("/room/{roomId}/exit")
     public void callExitRoom(@PathVariable Long roomId, @RequestBody RoomCreateRequest roomCreateRequest) {
         roomService.exitRoom(roomId, roomCreateRequest);
     }
+
+//    @GetMapping("/room/users")
+//    public ResponseEntity<List> callGetParticipatns(@RequestBody RoomParticipants.Participants roomParticipants) {
+//        System.out.println("roomParticipants.getRoomId() = " + roomParticipants.getRoomId());
+//        List<User> participants = roomService.getParticipants(roomParticipants.getRoomId());
+//        return ResponseEntity.ok(participants);
+//    }
 
 }

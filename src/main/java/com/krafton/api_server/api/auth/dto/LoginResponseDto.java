@@ -6,6 +6,7 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public class LoginResponseDto {
+    private Long id;
     private boolean success;
     private String message;
     private String accessToken;  // JWT 토큰 등을 반환할 경우
