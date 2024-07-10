@@ -9,9 +9,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.NoSuchElementException;
 
 import static com.krafton.api_server.api.room.dto.RoomRequest.RoomCreateRequest;
+import static com.krafton.api_server.api.room.dto.RoomRequest.RoomUser;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -23,7 +25,8 @@ public class RoomService {
     private final RoomRepository roomRepository;
 
     public Long createRoom(RoomCreateRequest roomCreateRequest) {
-        User user = userRepository.findById(roomCreateRequest.getUserId()).orElseThrow(NoSuchElementException::new);
+        User user = userRepository.findById(roomCreateRequest.getUserId())
+                .orElseThrow(NoSuchElementException::new);
 
         Room room = Room.builder()
                 .user(user)
@@ -32,10 +35,17 @@ public class RoomService {
         return createdRoom.getId();
     }
 
-    public void joinRoom(Long roomId, RoomCreateRequest roomCreateRequest) {
+    public List<RoomUser> getRoomUsers(Long roomId) {
+        Room room = roomRepository.findById(roomId).orElseThrow(NoSuchElementException::new);
+        List<User> participants = room.getParticipants();
+        return participants.stream().map(RoomUser::from).toList();
+    }
+
+    public Long joinRoom(Long roomId, RoomCreateRequest roomCreateRequest) {
         Room room = roomRepository.findById(roomId).orElseThrow(NoSuchElementException::new);
         User joinedUser = userRepository.findById(roomCreateRequest.getUserId()).orElseThrow(NoSuchElementException::new);
         room.joinRoom(joinedUser);
+        return room.getId();
     }
 
 
@@ -49,10 +59,4 @@ public class RoomService {
         }
     }
 
-//    public List getParticipants(Long roomId) {
-//        System.out.println("roomId = " + roomId);
-//        Room room = roomRepository.findById(roomId).orElseThrow(NoSuchElementException::new);
-//        List<User> participants = room.getParticipants();
-//        return participants;
-//    }
 }

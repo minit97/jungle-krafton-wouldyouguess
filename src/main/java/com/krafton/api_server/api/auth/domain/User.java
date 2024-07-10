@@ -16,23 +16,24 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_id")
     private Long id;
-
     private Long kakaoId;
     private String username;
     private String nickname;
-    private Long totalPoint;
-    private Long rank;
-
     private String refreshToken;
 
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "room_id")
     private Room room;
 
+    private Long totalPoint;
+    private Long rank;
+
+
     @Builder
-    public User(Long kakaoId, String username) {
+    public User(Long kakaoId, String username, String refreshToken) {
         this.kakaoId = kakaoId;
         this.username = username;
+        this.refreshToken = refreshToken;
         this.totalPoint = 0L;
     }
 
@@ -48,5 +49,7 @@ public class User {
         this.room = room;
     }
 
-
+    public void updateNickname(String nickname) {
+        this.nickname = nickname;
+    }
 }

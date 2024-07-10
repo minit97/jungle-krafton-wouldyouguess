@@ -7,7 +7,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.krafton.api_server.api.auth.domain.User;
 import com.krafton.api_server.api.auth.dto.KakaoTokenDto;
 import com.krafton.api_server.api.auth.dto.KakaoUserInfo;
-import com.krafton.api_server.api.auth.dto.LoginResponseDto;
+import com.krafton.api_server.api.auth.dto.UserResponseDto;
 import com.krafton.api_server.api.auth.repository.UserRepository;
 import com.krafton.api_server.api.auth.util.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
@@ -103,31 +103,24 @@ public class AuthService {
         }
     }
 
-    public ResponseEntity<LoginResponseDto> kakaoLogin(String accessToken) {
-
-        // 액세스 토큰으로 사용자 정보 요청
-        KakaoUserInfo kakaoUserInfo = getKakaoUserInfo(accessToken);
+    public UserResponseDto kakaoLogin(String accessToken) {
+        KakaoUserInfo kakaoUserInfo = getKakaoUserInfo(accessToken);                        // 액세스 토큰으로 사용자 정보 요청
+        String jwtToken = jwtTokenProvider.createAccessToken(kakaoUserInfo.getId());        // JWT 토큰 생성
+        String refreshToken = jwtTokenProvider.createRefreshToken(kakaoUserInfo.getId());   // JWT refresh 토큰 생성
 
         // 사용자 정보로 회원가입 또는 로그인 처리
         User user = userRepository.findByKakaoId(kakaoUserInfo.getId())
-                .orElseGet(() -> registerUser(kakaoUserInfo));
+                .orElseGet(() -> registerUser(kakaoUserInfo, refreshToken));
 
-        // JWT 토큰 생성
-        String jwtToken = jwtTokenProvider.createAccessToken(user.getKakaoId());
-
-        // JWT refresh 토큰 생성
-        String refreshToken = jwtTokenProvider.createRefreshToken(user.getKakaoId());
-
-        // 로그인 응답 생성
-        LoginResponseDto loginResponse = new LoginResponseDto(true, "Login successful", jwtToken, refreshToken, user.getUsername());
-
-        return ResponseEntity.ok().body(loginResponse);
+        UserResponseDto response = UserResponseDto.from(user, jwtToken);
+        return response;
     }
 
-    private User registerUser(KakaoUserInfo kakaoUserInfo) {
+    private User registerUser(KakaoUserInfo kakaoUserInfo, String refreshToken) {
         User user = User.builder()
                 .kakaoId(kakaoUserInfo.getId())
                 .username(kakaoUserInfo.getKakaoAccount().getProfile().getNickname())
+                .refreshToken(refreshToken)
                 .build();
         
         return userRepository.save(user);

@@ -1,23 +1,26 @@
 package com.krafton.api_server.api.auth.service;
 
 import com.krafton.api_server.api.auth.domain.User;
+import com.krafton.api_server.api.auth.dto.UserRequestDto;
+import com.krafton.api_server.api.auth.dto.UserResponseDto;
 import com.krafton.api_server.api.auth.repository.UserRepository;
 import jakarta.servlet.http.HttpSession;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
+@Slf4j
+@RequiredArgsConstructor
 @Service
 public class UserService {
 
     private final HttpSession httpSession;
     private final UserRepository userRepository;
-
-    public UserService(HttpSession httpSession, UserRepository userRepository) {
-        this.httpSession = httpSession;
-        this.userRepository = userRepository;
-    }
 
     public User getUser() {
         return (User) httpSession.getAttribute("user");
@@ -45,4 +48,11 @@ public class UserService {
     }
 
 
+    @Transactional
+    public UserResponseDto updateNickname(Long userId, UserRequestDto request) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(NoSuchElementException::new);
+        user.updateNickname(request.getNickname());
+        return UserResponseDto.from(user);
+    }
 }

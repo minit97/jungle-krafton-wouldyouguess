@@ -6,7 +6,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 import static com.krafton.api_server.api.room.dto.RoomRequest.RoomCreateRequest;
+import static com.krafton.api_server.api.room.dto.RoomRequest.RoomUser;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -22,20 +25,22 @@ public class RoomController {
         return ResponseEntity.ok(roomId);
     }
 
-    @PostMapping("/room/{roomId}/join")
-    public void callJoinRoom(@PathVariable Long roomId, @RequestBody RoomCreateRequest roomCreateRequest) {
-        roomService.joinRoom(roomId, roomCreateRequest);
+    @GetMapping("/room/{roomId}/users")
+    public ResponseEntity<List<RoomUser>> callRoomUsers(@PathVariable Long roomId) {
+        List<RoomUser> roomUsers = roomService.getRoomUsers(roomId);
+        return ResponseEntity.ok(roomUsers);
     }
 
+    @PostMapping("/room/{roomId}/join")
+    public ResponseEntity<Long> callJoinRoom(@PathVariable Long roomId, @RequestBody RoomCreateRequest roomCreateRequest) {
+        Long reponseRoomId = roomService.joinRoom(roomId, roomCreateRequest);
+        return ResponseEntity.ok(reponseRoomId);
+    }
+
+    @PostMapping("/room/{roomId}/exit")
     public void callExitRoom(@PathVariable Long roomId, @RequestBody RoomCreateRequest roomCreateRequest) {
         roomService.exitRoom(roomId, roomCreateRequest);
     }
 
-//    @GetMapping("/room/users")
-//    public ResponseEntity<List> callGetParticipatns(@RequestBody RoomParticipants.Participants roomParticipants) {
-//        System.out.println("roomParticipants.getRoomId() = " + roomParticipants.getRoomId());
-//        List<User> participants = roomService.getParticipants(roomParticipants.getRoomId());
-//        return ResponseEntity.ok(participants);
-//    }
 
 }

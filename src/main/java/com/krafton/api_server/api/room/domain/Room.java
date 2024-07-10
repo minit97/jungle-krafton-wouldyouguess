@@ -25,7 +25,6 @@ public class Room {
 
     @Builder
     public Room(User user) {
-        this.participants = new ArrayList<>();
         joinRoom(user);
     }
 
