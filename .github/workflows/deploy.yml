@@ -22,14 +22,14 @@ jobs:
       - name: Create application.yml
         run: |
           cd ./src/main/resources
-          touch ./application.yml
-          echo "${{ secrets.YML }}" > ./application.yml
+          touch ./application.properties
+          echo "${{ secrets.PROPERTIES }}" > ./application.properties
 
       - name: Grant execute permission for gradlew
         run: chmod +x ./gradlew
 
       - name: Build with Gradle
-        run: ./gradlew clean build -x test
+        run: ./gradlew clean build -x test  --args='--spring.profiles.active=properties'
 
       - name: Login to Docker Hub
         uses: docker/login-action@v2
@@ -53,3 +53,4 @@ jobs:
           version_label: deploy-${{ github.sha }}
           region: ap-northeast-2
           deployment_package: docker-compose.yml
+          wait_for_environment_recovery: 300
