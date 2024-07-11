@@ -1,29 +1,28 @@
 package com.krafton.api_server.api.game.dto;
 
-import lombok.Getter;
+import lombok.Data;
 
 public class CatchLiarRequest {
-    @Getter
+    @Data
     public static class CatchLiarStartRequestDto {
         private Long roomId;
     }
 
-
-    @Getter
+    @Data
     public static class CatchLiarInfoRequestDto {
         private Long catchLiarGameId;
         private Long userId;
         private Integer round;
     }
 
-    @Getter
+    @Data
     public static class CatchLiarVoteRequestDto {
         private Long catchLiarGameId;
         private Long votingUserId;
     }
 
 
-    @Getter
+    @Data
     public static class CatchLiarResultRequestDto {
         private Long catchLiarGameId;
         private Long userId;

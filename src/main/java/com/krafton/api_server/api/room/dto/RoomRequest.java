@@ -14,11 +14,13 @@ public class RoomRequest {
     @Getter
     public static class RoomUser {
         private Long user_id;
+        private String username;
         private String nickname;
 
         @Builder
-        public RoomUser(Long user_id, String nickname) {
+        public RoomUser(Long user_id, String username,String nickname) {
             this.user_id = user_id;
+            this.username = username;
             this.nickname = nickname;
         }
 
@@ -27,6 +29,7 @@ public class RoomRequest {
 
             return RoomUser.builder()
                     .user_id(user.getId())
+                    .username(user.getUsername())
                     .nickname(user.getNickname())
                     .build();
         }
