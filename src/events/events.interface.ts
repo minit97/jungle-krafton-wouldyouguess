@@ -1,28 +1,52 @@
 
-export interface PointData {
+// room_create, room_join, room_exit
+export interface LobbyRequest {
+    roomId: number;
+    userId: number;
+}
+
+export interface Lobby {
+    roomId: number;
+    userList: number[];
+}
+
+
+// game_start, game_round_change, game_end
+export interface GameStartRequest {
+    mode: number;
+    userId: number;
+    roomId: number;
+    gameId: number;
+}
+
+export interface GameRoundChangeRequest {
+    userId: number;
+    roomId: number;
+    gameId: number;
+    round: number;
+}
+
+export interface GameEndRequest {
+    userId: number;
+    roomId: number;
+    gameId: number;
+}
+
+// drawer_draw_start, drawer_draw_move
+export interface DrawerRequest {
     tool: string;
-    points: number[];
+    xAxis: number;
+    yAxis: number;
+    color: string;
+    size: number;
+    fillColor: string;
+    roomId: number;
 }
 
-// {
-//   "room_id": 1,
-//     "user_list": [
-//       { "user_id": 1, "user_role": "drawer", "is_liar": true },
-//       { "user_id": 2, "user_role": "watcher", "is_liar": true },
-//       { "user_id": 3, "user_role": "watcher", "is_liar": true },
-//       { "user_id": 4, "user_role": "watcher", "is_liar": true }
-//   ]
-// }
-
-export interface User {
-    user_id: number;
-    user_role: "drawer" | "watcher"; // 사용자 역할을 문자열 리터럴 타입으로 제한
-    is_liar: boolean;
+// watcher_draw_start, watcher_draw_move
+export interface WatcherRequest {
+    tool: string;
+    xAxis: number;
+    yAxis: number;
+    roomId: number;
 }
-
-export interface Game1Data {
-    room_id: number;
-    user_list: User[];
-}
-
-
