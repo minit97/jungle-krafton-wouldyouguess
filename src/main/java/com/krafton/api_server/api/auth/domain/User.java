@@ -26,6 +26,7 @@ public class User {
     private Room room;
 
     private Long totalPoint;
+    @Column(name = "user_rank")
     private Long rank;
 
 
