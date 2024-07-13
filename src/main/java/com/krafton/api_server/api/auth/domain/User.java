@@ -31,9 +31,10 @@ public class User {
 
 
     @Builder
-    public User(Long kakaoId, String username, String refreshToken) {
+    public User(Long kakaoId, String username, String nickname, String refreshToken) {
         this.kakaoId = kakaoId;
         this.username = username;
+        this.nickname = nickname;
         this.refreshToken = refreshToken;
         this.totalPoint = 0L;
     }
