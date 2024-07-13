@@ -1,6 +1,7 @@
 package com.krafton.api_server.api.auth.service;
 
 import com.krafton.api_server.api.auth.domain.User;
+import com.krafton.api_server.api.auth.dto.TempLogin;
 import com.krafton.api_server.api.auth.dto.UserRequestDto;
 import com.krafton.api_server.api.auth.dto.UserResponseDto;
 import com.krafton.api_server.api.auth.repository.UserRepository;
@@ -54,5 +55,14 @@ public class UserService {
                 .orElseThrow(NoSuchElementException::new);
         user.updateNickname(request.getNickname());
         return UserResponseDto.from(user);
+    }
+
+    public UserResponseDto getTempLogin(TempLogin tempLogin) {
+        User user = User.builder()
+                .username(tempLogin.getUsername())
+                .nickname(tempLogin.getNickname())
+                .build();
+        User saved = userRepository.save(user);
+        return UserResponseDto.from(saved);
     }
 }
