@@ -4,9 +4,10 @@ import {AppController} from './app.controller';
 import {AppService} from './app.service';
 import {LoggerMiddleware} from "./middlewares/logger.middlewares";
 import {EventsModule} from './events/events.module';
+import {LivekitModule} from "./livekit/livekit.module";
 
 @Module({
-  imports: [ConfigModule.forRoot({ isGlobal: true }), EventsModule],
+  imports: [ConfigModule.forRoot({ isGlobal: true }), EventsModule, LivekitModule],
   controllers: [AppController],
   providers: [AppService, ConfigService],
 })

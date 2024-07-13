@@ -1,7 +1,6 @@
-import {Injectable, HttpException, HttpStatus, Req, Res} from '@nestjs/common';
+import {HttpException, HttpStatus, Injectable} from '@nestjs/common';
 import {AccessToken, WebhookReceiver} from 'livekit-server-sdk';
 import * as dotenv from 'dotenv';
-import {Request, Response} from 'express';
 import * as process from 'process';
 
 dotenv.config();
