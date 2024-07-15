@@ -44,7 +44,7 @@ export class EventsGateway implements OnGatewayInit, OnGatewayConnection, OnGate
 
   @SubscribeMessage('room_create')
   handleRoomCreate(@MessageBody() request:LobbyRequest, @ConnectedSocket() client: Socket) {
-    this.logger.log(`room_create: ${JSON.stringify(request)}`);
+    // this.logger.log(`room_create: ${JSON.stringify(request)}`);
 
     const { roomId, userId } = request;
     let lobby = this.lobbies.find(lobby => lobby.roomId === roomId);
@@ -66,7 +66,7 @@ export class EventsGateway implements OnGatewayInit, OnGatewayConnection, OnGate
 
   @SubscribeMessage('room_join')
   handleRoomJoin(@MessageBody() request:LobbyRequest, @ConnectedSocket() client: Socket)  {
-    this.logger.log(`room_join: ${JSON.stringify(request)}`);
+    // this.logger.log(`room_join: ${JSON.stringify(request)}`);
 
     const { roomId, userId } = request;
 
@@ -83,7 +83,7 @@ export class EventsGateway implements OnGatewayInit, OnGatewayConnection, OnGate
 
   @SubscribeMessage('room_exit')
   handleRoomExit(@MessageBody() request:LobbyRequest, @ConnectedSocket() client: Socket) {
-    this.logger.log(`room_exit: ${JSON.stringify(request)}`);
+    // this.logger.log(`room_exit: ${JSON.stringify(request)}`);
 
     const { roomId, userId } = request;
 
@@ -140,6 +140,26 @@ export class EventsGateway implements OnGatewayInit, OnGatewayConnection, OnGate
     client.to(roomId.toString()).emit('game_end', request);
   }
 
+
+  private temp = 0;
+  @SubscribeMessage('game_result')
+  handleGameResultAait(@MessageBody() request: GameRoundChangeRequest, @ConnectedSocket() client: Socket)  {
+
+    const { userId, roomId, gameId, round } = request;
+
+    const lobby = this.lobbies.find(lobby => lobby.roomId === roomId);
+    if (!lobby) {
+      this.logger.warn(`Room with ID ${roomId} does not exist.`);
+    }
+
+    this.temp += 1
+    console.log("박현민 1 : ", lobby.userList.length);
+    console.log("박현민 2 : ", this.temp);
+    if (lobby.userList.length === this.temp) {
+      client.to(roomId.toString()).emit('game_result', request);
+    }
+  }
+
   // drawer : 그림 그리기 / watcher : 그림 그리는 좌표 전송
   @SubscribeMessage('drawer_draw_start')
   handleDrawerDrawStart(@MessageBody() request: DrawerRequest,  @ConnectedSocket() client: Socket) {
@@ -167,14 +187,14 @@ export class EventsGateway implements OnGatewayInit, OnGatewayConnection, OnGate
 
   //todo 후작업 : watcher(socketId or userId 판별)들에게만 보이는 레이저 포인터 생성 - 클라에서 삭제 로직
 
-  // @SubscribeMessage('watcher_draw_start')
-  // handleWatcherDrawStart(@MessageBody() data: PointData[],  @ConnectedSocket() client: Socket): void {
-  //
-  // }
-  //
-  // @SubscribeMessage('watcher_draw_move')
-  // handleWatcherDrawMove(@MessageBody() data: PointData[],  @ConnectedSocket() client: Socket): void {
-  //
-  // }
+  @SubscribeMessage('watcher_draw_start')
+  handleWatcherDrawStart(@MessageBody() request: DrawerRequest,  @ConnectedSocket() client: Socket): void {
+
+  }
+
+  @SubscribeMessage('watcher_draw_move')
+  handleWatcherDrawMove(@MessageBody() request: DrawerRequest,  @ConnectedSocket() client: Socket): void {
+
+  }
 }
 
