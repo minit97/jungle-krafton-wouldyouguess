@@ -5,6 +5,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import net.minidev.json.annotate.JsonIgnore;
 
 import static jakarta.persistence.FetchType.LAZY;
 
@@ -25,8 +26,12 @@ public class CatchLiarUser {
     private Integer drawOrder;
     private Integer votedCount;
 
+    private String imageKey;
+    private String imagePath;
+
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "catch_liar_game_id")
+    @JsonIgnore
     private CatchLiarGame catchLiarGame;
 
     @Builder
@@ -35,6 +40,7 @@ public class CatchLiarUser {
         this.isLiar = isLiar;
         this.keyword = keyword;
         this.drawOrder = drawOrder;
+        this.votedCount = 0;
     }
 
     public void catchLiarGameStart(CatchLiarGame catchLiarGame) {
@@ -47,5 +53,10 @@ public class CatchLiarUser {
 
     public Boolean isLiar() {
         return isLiar;
+    }
+
+    public void uploadImageS3 (String key, String path) {
+        this.imageKey = key;
+        this.imagePath = path;
     }
 }

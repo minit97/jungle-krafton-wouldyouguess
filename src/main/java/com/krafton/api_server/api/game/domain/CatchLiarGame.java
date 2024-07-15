@@ -5,6 +5,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import net.minidev.json.annotate.JsonIgnore;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,6 +22,7 @@ public class CatchLiarGame {
     private Integer round;
 
     @OneToMany(mappedBy = "catchLiarGame")
+    @JsonIgnore
     private List<CatchLiarUser> catchLiarUsers = new ArrayList<>();
 
     @Builder
@@ -32,4 +34,5 @@ public class CatchLiarGame {
         user.catchLiarGameStart(this);
         catchLiarUsers.add(user);
     }
+
 }

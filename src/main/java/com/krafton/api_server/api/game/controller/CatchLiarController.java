@@ -1,12 +1,18 @@
 package com.krafton.api_server.api.game.controller;
 
+import com.krafton.api_server.api.game.domain.CatchLiarUser;
 import com.krafton.api_server.api.game.dto.CatchLiarInfoResponseDto;
+import com.krafton.api_server.api.game.dto.CatchLiarVoteCandidatesResponseDto;
 import com.krafton.api_server.api.game.service.CatchLiarService;
+import com.krafton.api_server.api.photo.domain.AwsS3;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 
 import static com.krafton.api_server.api.game.dto.CatchLiarRequest.*;
@@ -33,8 +39,8 @@ public class CatchLiarController {
     }
 
     @GetMapping("/catchLiar/candidates")
-    public ResponseEntity<List<Long>> callCatchLiarCandidates(Long catchLiarGameId) {
-        List<Long> result = catchLiarService.catchLiarVoteCandidates(catchLiarGameId);
+    public ResponseEntity<List<CatchLiarVoteCandidatesResponseDto>> callCatchLiarCandidates(Long catchLiarGameId) {
+        List<CatchLiarVoteCandidatesResponseDto> result = catchLiarService.catchLiarVoteCandidates(catchLiarGameId);
         return ResponseEntity.ok(result);
     }
 
@@ -47,5 +53,18 @@ public class CatchLiarController {
     public ResponseEntity<String> callCatchLiarResult(CatchLiarResultRequestDto request) {
         String result = catchLiarService.catchLiarResult(request);
         return ResponseEntity.ok(result);
+    }
+
+
+    @PostMapping("/catchLiar/image")
+    public HashMap<String, String> callCatchLiarImgS3upload(@RequestParam("userId") Long userId,
+                                                            @RequestParam("catchLiarGameId") Long gameId,
+                                                            @RequestParam("file") MultipartFile file) throws IOException {
+        return catchLiarService.catchLiarImgS3upload(userId, gameId, file);
+    }
+
+    @DeleteMapping("/catchLiar/image")
+    public void callCatchLiarImgS3Remove (AwsS3 awsS3) {
+        catchLiarService.catchLiarImgS3Remove(awsS3);
     }
 }

@@ -1,21 +1,32 @@
 package com.krafton.api_server.api.game.service;
 
 
+import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.model.AmazonS3Exception;
+import com.amazonaws.services.s3.model.CannedAccessControlList;
+import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.krafton.api_server.api.auth.domain.User;
 import com.krafton.api_server.api.game.domain.CatchLiarGame;
 import com.krafton.api_server.api.game.domain.CatchLiarKeyword;
 import com.krafton.api_server.api.game.domain.CatchLiarUser;
 import com.krafton.api_server.api.game.dto.CatchLiarInfoResponseDto;
+import com.krafton.api_server.api.game.dto.CatchLiarVoteCandidatesResponseDto;
 import com.krafton.api_server.api.game.repository.CatchLiarKeywordRepository;
 import com.krafton.api_server.api.game.repository.CatchLiarGameRepository;
 import com.krafton.api_server.api.game.repository.CatchLiarUserRepository;
+import com.krafton.api_server.api.photo.domain.AwsS3;
 import com.krafton.api_server.api.room.domain.Room;
 import com.krafton.api_server.api.room.repository.RoomRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -28,6 +39,13 @@ import static com.krafton.api_server.api.game.dto.CatchLiarRequest.CatchLiarInfo
 @Service
 public class CatchLiarService {
 
+    @Value("${cloud.aws.s3.bucket}")
+    private String bucket;
+
+    @Value("${cloud.aws.cloud_front_url}")
+    private String frontCloudUrl;
+
+    private final AmazonS3 amazonS3;
     private final RoomRepository roomRepository;
     private final CatchLiarGameRepository catchLiarGameRepository;
     private final CatchLiarKeywordRepository catchLiarKeywordRepository;
@@ -44,7 +62,6 @@ public class CatchLiarService {
         int randomIndex = random.nextInt(room.getParticipants().size());
 
         CatchLiarKeyword keyword = catchLiarKeywordRepository.findRandomCatchLiarKeyword();
-
 
         List<Integer> numbers = new ArrayList<>();
         for (int i = 0; i < room.getParticipants().size(); i++) {
@@ -68,7 +85,7 @@ public class CatchLiarService {
                     .build();
             catchLiarUserRepository.save(user);
 
-            startedGame.addUsers(user);
+            game.addUsers(user);
         }
 
         return startedGame.getId();
@@ -83,18 +100,18 @@ public class CatchLiarService {
                 .findFirst()
                 .orElseThrow(NoSuchElementException::new);
 
-        return CatchLiarInfoResponseDto.from(matchingUser, request.getRound());
+        return CatchLiarInfoResponseDto.from(matchingUser, request.getRound(), catchLiarUsers.size());
     }
 
 
-    public List<Long> catchLiarVoteCandidates(Long catchLiarGameId) {
+    public List<CatchLiarVoteCandidatesResponseDto> catchLiarVoteCandidates(Long catchLiarGameId) {
         CatchLiarGame game = catchLiarGameRepository.findById(catchLiarGameId)
                 .orElseThrow(NoSuchElementException::new);
         List<CatchLiarUser> catchLiarUsers = game.getCatchLiarUsers();
-        List<Long> userIdList = catchLiarUsers.stream()
-                .map(CatchLiarUser::getUserId)
+        List<CatchLiarVoteCandidatesResponseDto> response = catchLiarUsers.stream()
+                .map((CatchLiarVoteCandidatesResponseDto::from))
                 .collect(Collectors.toList());
-        return userIdList;
+        return response;
     }
 
     public void catchLiarVote(CatchLiarVoteRequestDto request) {
@@ -133,5 +150,55 @@ public class CatchLiarService {
             return gameResult ? "승리" : "패배";
         }
     }
+
+    public HashMap<String, String> catchLiarImgS3upload(Long userId, Long gameId, MultipartFile multipartFile) throws IOException {
+        File file = convertMultipartFileToFile(multipartFile)
+                .orElseThrow(() -> new IllegalArgumentException("MultipartFile -> File convert fail"));
+
+        String objectName = randomFileName(file, "catchLiar");
+
+        // put s3
+        amazonS3.putObject(new PutObjectRequest(bucket, objectName, file)
+                .withCannedAcl(CannedAccessControlList.PublicRead));
+        String path = amazonS3.getUrl(bucket, objectName).toString();
+        file.delete();
+
+        CatchLiarGame game = catchLiarGameRepository.findById(gameId)
+                .orElseThrow(NoSuchElementException::new);
+        List<CatchLiarUser> catchLiarUsers = game.getCatchLiarUsers();
+        CatchLiarUser matchingUser = catchLiarUsers.stream()
+                .filter(user -> user.getUserId().equals(userId))
+                .findFirst()
+                .orElseThrow(NoSuchElementException::new);
+        matchingUser.uploadImageS3(objectName, path);
+
+        HashMap<String, String> response = new HashMap<>();
+        response.put("imageKey", matchingUser.getImageKey());
+        response.put("imagePath", matchingUser.getImagePath());
+        return response;
+    }
+    private Optional<File> convertMultipartFileToFile(MultipartFile multipartFile) throws IOException {
+        File file = new File(System.getProperty("user.dir") + "/" + multipartFile.getOriginalFilename());
+
+        if (file.createNewFile()) {
+            try (FileOutputStream fos = new FileOutputStream(file)){
+                fos.write(multipartFile.getBytes());
+            }
+            return Optional.of(file);
+        }
+        return Optional.empty();
+    }
+
+    private String randomFileName(File file, String dirName) {
+        return dirName + "/" + UUID.randomUUID() + file.getName();
+    }
+
+    public void catchLiarImgS3Remove(AwsS3 awsS3) {
+        if (!amazonS3.doesObjectExist(bucket, awsS3.getKey())) {
+            throw new AmazonS3Exception("Object " +awsS3.getKey()+ " does not exist!");
+        }
+        amazonS3.deleteObject(bucket, awsS3.getKey());
+    }
+
 
 }
