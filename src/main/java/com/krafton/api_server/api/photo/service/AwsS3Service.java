@@ -1,10 +1,7 @@
 package com.krafton.api_server.api.photo.service;
-
 import com.amazonaws.SdkClientException;
 import com.amazonaws.services.s3.AmazonS3;
-import com.amazonaws.services.s3.model.AmazonS3Exception;
-import com.amazonaws.services.s3.model.CannedAccessControlList;
-import com.amazonaws.services.s3.model.PutObjectRequest;
+import com.amazonaws.services.s3.model.*;
 import com.krafton.api_server.api.photo.domain.AwsS3;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -12,11 +9,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -30,39 +25,23 @@ public class AwsS3Service {
     @Value("${cloud.aws.cloud_front_url}")
     private String frontCloudUrl;
 
-    public AwsS3 upload(MultipartFile multipartFile, String dirName) throws IOException {
-        File file = convertMultipartFileToFile(multipartFile)
-                .orElseThrow(() -> new IllegalArgumentException("MultipartFile -> File convert fail"));
+    public String upload(MultipartFile file) throws IOException {
+        String objectKey = createObjectKey(file.getOriginalFilename());
 
-        String objectName = randomFileName(file, dirName);
+        ObjectMetadata objectMetadata = new ObjectMetadata();
+        objectMetadata.setContentType(file.getContentType());
+        objectMetadata.setContentLength(file.getSize());
 
-        // put s3
-        amazonS3.putObject(new PutObjectRequest(bucket, objectName, file)
-                .withCannedAcl(CannedAccessControlList.PublicRead));
-        String path = amazonS3.getUrl(bucket, objectName).toString();
-        file.delete();
+        PutObjectRequest putObjectRequest = new PutObjectRequest(
+                bucket,
+                objectKey,
+                file.getInputStream(),
+                objectMetadata
+        );
 
-        return AwsS3
-                .builder()
-                .key(objectName)
-                .path(frontCloudUrl + objectName)
-                .build();
-    }
+        amazonS3.putObject(putObjectRequest);
 
-    public Optional<File> convertMultipartFileToFile(MultipartFile multipartFile) throws IOException {
-        File file = new File(System.getProperty("user.dir") + "/" + multipartFile.getOriginalFilename());
-
-        if (file.createNewFile()) {
-            try (FileOutputStream fos = new FileOutputStream(file)){
-                fos.write(multipartFile.getBytes());
-            }
-            return Optional.of(file);
-        }
-        return Optional.empty();
-    }
-
-    private String randomFileName(File file, String dirName) {
-        return dirName + "/" + UUID.randomUUID() + file.getName();
+        return getImageUrl(objectKey);
     }
 
     public void delete(String key) {
@@ -76,4 +55,36 @@ public class AwsS3Service {
             throw e;
         }
     }
+
+    public List<AwsS3> listImages(String prefix) {
+        ListObjectsV2Request listObjectsRequest = new ListObjectsV2Request()
+                .withBucketName(bucket)
+                .withPrefix(prefix);
+
+        ListObjectsV2Result result = amazonS3.listObjectsV2(listObjectsRequest);
+        List<S3ObjectSummary> objects = result.getObjectSummaries();
+
+        return objects.stream()
+                .map(object -> AwsS3.builder()
+                        .key(object.getKey())
+                        .path(getImageUrl(object.getKey()))
+                        .build())
+                .collect(Collectors.toList());
+    }
+
+    public String getImageUrl(String key) {
+
+        return String.format("https://%s.s3.amazonaws.com/%s", bucket, key);
+
+    }
+
+    private String createObjectKey(String fileName) {
+        String timestamp = String.valueOf(System.currentTimeMillis());
+        return String.format("%s_%s", timestamp, fileName);
+    }
+
+    private String getFullPath(String objectKey) {
+        return frontCloudUrl + objectKey;
+    }
+
 }

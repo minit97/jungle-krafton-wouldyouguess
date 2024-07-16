@@ -1,0 +1,1 @@
+INSERT INTO CATCH_LIAR_KEYWORD (liar_keyword, keyword) VALUES ('풋사과', '사과');
