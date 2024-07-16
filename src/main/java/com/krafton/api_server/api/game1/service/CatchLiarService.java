@@ -1,4 +1,4 @@
-package com.krafton.api_server.api.game.service;
+package com.krafton.api_server.api.game1.service;
 
 
 import com.amazonaws.services.s3.AmazonS3;
@@ -7,15 +7,15 @@ import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.krafton.api_server.api.auth.domain.User;
 import com.krafton.api_server.api.auth.repository.UserRepository;
-import com.krafton.api_server.api.game.domain.CatchLiarGame;
-import com.krafton.api_server.api.game.domain.CatchLiarKeyword;
-import com.krafton.api_server.api.game.domain.CatchLiarUser;
-import com.krafton.api_server.api.game.dto.CatchLiarInfoResponseDto;
-import com.krafton.api_server.api.game.dto.CatchLiarResultResponseDto;
-import com.krafton.api_server.api.game.dto.CatchLiarVoteCandidatesResponseDto;
-import com.krafton.api_server.api.game.repository.CatchLiarKeywordRepository;
-import com.krafton.api_server.api.game.repository.CatchLiarGameRepository;
-import com.krafton.api_server.api.game.repository.CatchLiarUserRepository;
+import com.krafton.api_server.api.game1.domain.CatchLiarGame;
+import com.krafton.api_server.api.game1.domain.CatchLiarKeyword;
+import com.krafton.api_server.api.game1.domain.CatchLiarUser;
+import com.krafton.api_server.api.game1.dto.CatchLiarInfoResponseDto;
+import com.krafton.api_server.api.game1.dto.CatchLiarResultResponseDto;
+import com.krafton.api_server.api.game1.dto.CatchLiarVoteCandidatesResponseDto;
+import com.krafton.api_server.api.game1.repository.CatchLiarKeywordRepository;
+import com.krafton.api_server.api.game1.repository.CatchLiarGameRepository;
+import com.krafton.api_server.api.game1.repository.CatchLiarUserRepository;
 import com.krafton.api_server.api.photo.domain.AwsS3;
 import com.krafton.api_server.api.room.domain.Room;
 import com.krafton.api_server.api.room.repository.RoomRepository;
@@ -32,8 +32,8 @@ import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static com.krafton.api_server.api.game.dto.CatchLiarRequest.*;
-import static com.krafton.api_server.api.game.dto.CatchLiarRequest.CatchLiarInfoRequestDto;
+import static com.krafton.api_server.api.game1.dto.CatchLiarRequest.*;
+import static com.krafton.api_server.api.game1.dto.CatchLiarRequest.CatchLiarInfoRequestDto;
 
 @Slf4j
 @Transactional

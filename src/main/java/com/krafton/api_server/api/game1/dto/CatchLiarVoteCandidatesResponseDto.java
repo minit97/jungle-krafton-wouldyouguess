@@ -1,6 +1,6 @@
-package com.krafton.api_server.api.game.dto;
+package com.krafton.api_server.api.game1.dto;
 
-import com.krafton.api_server.api.game.domain.CatchLiarUser;
+import com.krafton.api_server.api.game1.domain.CatchLiarUser;
 import lombok.*;
 
 @Getter

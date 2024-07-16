@@ -1,4 +1,4 @@
-package com.krafton.api_server.api.game.domain;
+package com.krafton.api_server.api.game1.domain;
 
 public enum GameType {
     MODE1("캐치 라이어"),

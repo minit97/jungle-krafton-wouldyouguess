@@ -1,14 +1,14 @@
 package com.krafton.api_server.api.photo.domain;
 
 import com.krafton.api_server.api.auth.domain.User;
-import com.krafton.api_server.api.game.domain.GameType;
+import com.krafton.api_server.api.game1.domain.GameType;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.io.File;
+
 import static jakarta.persistence.FetchType.LAZY;
 
 @Entity

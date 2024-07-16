@@ -1,4 +1,4 @@
-package com.krafton.api_server.api.game.dto;
+package com.krafton.api_server.api.game1.dto;
 
 import lombok.Data;
 

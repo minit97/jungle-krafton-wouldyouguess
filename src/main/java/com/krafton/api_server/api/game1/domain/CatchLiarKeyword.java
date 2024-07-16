@@ -1,4 +1,4 @@
-package com.krafton.api_server.api.game.domain;
+package com.krafton.api_server.api.game1.domain;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
