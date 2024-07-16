@@ -8,6 +8,7 @@ export interface LobbyRequest {
 export interface Lobby {
     roomId: number;
     userList: number[];
+    voteCnt: number;
 }
 
 

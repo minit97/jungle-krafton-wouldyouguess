@@ -55,7 +55,8 @@ export class EventsGateway implements OnGatewayInit, OnGatewayConnection, OnGate
       // roomId가 존재하지 않으면 새로운 Lobby 객체 생성하여 추가
       const newLobby: Lobby = {
         roomId: roomId,
-        userList: [userId]
+        userList: [userId],
+        voteCnt: 0
       };
       this.lobbies.push(newLobby);
       lobby = newLobby;
@@ -72,7 +73,7 @@ export class EventsGateway implements OnGatewayInit, OnGatewayConnection, OnGate
 
     const lobby = this.lobbies.find(lobby => lobby.roomId === roomId);
     if (!lobby) {
-      this.logger.warn(`Room with ID ${roomId} does not exist.`);
+      this.logger.warn(`room_join : Room with ID ${roomId} does not exist.`);
     }
 
     !lobby.userList.includes(userId) && lobby.userList.push(userId);
@@ -89,7 +90,7 @@ export class EventsGateway implements OnGatewayInit, OnGatewayConnection, OnGate
 
     const lobby = this.lobbies.find(lobby => lobby.roomId === roomId);
     if (!lobby) {
-      this.logger.warn(`Room with ID ${roomId} does not exist.`);
+      this.logger.warn(`room_exit : Room with ID ${roomId} does not exist.`);
     }
 
     lobby.userList = lobby.userList.filter(id => id !== userId);
@@ -106,10 +107,10 @@ export class EventsGateway implements OnGatewayInit, OnGatewayConnection, OnGate
 
     const lobby = this.lobbies.find(lobby => lobby.roomId === roomId);
     if (!lobby) {
-      this.logger.warn(`Room with ID ${roomId} does not exist.`);
+      this.logger.warn(`game_start : Room with ID ${roomId} does not exist.`);
     }
 
-    client.to(roomId.toString()).emit('game_start', request);
+    this.server.in(roomId.toString()).emit('game_start', request);
   }
 
   @SubscribeMessage('game_round_change')
@@ -120,10 +121,10 @@ export class EventsGateway implements OnGatewayInit, OnGatewayConnection, OnGate
 
     const lobby = this.lobbies.find(lobby => lobby.roomId === roomId);
     if (!lobby) {
-      this.logger.warn(`Room with ID ${roomId} does not exist.`);
+      this.logger.warn(`game_round_change : Room with ID ${roomId} does not exist.`);
     }
 
-    client.to(roomId.toString()).emit('game_round_change', request);
+    this.server.in(roomId.toString()).emit('game_round_change', request);
   }
 
   @SubscribeMessage('game_end')
@@ -134,14 +135,12 @@ export class EventsGateway implements OnGatewayInit, OnGatewayConnection, OnGate
 
     const lobby = this.lobbies.find(lobby => lobby.roomId === roomId);
     if (!lobby) {
-      this.logger.warn(`Room with ID ${roomId} does not exist.`);
+      this.logger.warn(`game_end : Room with ID ${roomId} does not exist.`);
     }
 
-    client.to(roomId.toString()).emit('game_end', request);
+    this.server.in(roomId.toString()).emit('game_end', request);
   }
 
-
-  private temp = 0;
   @SubscribeMessage('game_result')
   handleGameResultAait(@MessageBody() request: GameRoundChangeRequest, @ConnectedSocket() client: Socket)  {
 
@@ -149,14 +148,12 @@ export class EventsGateway implements OnGatewayInit, OnGatewayConnection, OnGate
 
     const lobby = this.lobbies.find(lobby => lobby.roomId === roomId);
     if (!lobby) {
-      this.logger.warn(`Room with ID ${roomId} does not exist.`);
+      this.logger.warn(`game_result : Room with ID ${roomId} does not exist.`);
     }
 
-    this.temp += 1
-    console.log("박현민 1 : ", lobby.userList.length);
-    console.log("박현민 2 : ", this.temp);
-    if (lobby.userList.length === this.temp) {
-      client.to(roomId.toString()).emit('game_result', request);
+    lobby.voteCnt += 1
+    if (lobby.userList.length === lobby.voteCnt) {
+      this.server.in(roomId.toString()).emit('game_result', request);
     }
   }
 
@@ -167,7 +164,7 @@ export class EventsGateway implements OnGatewayInit, OnGatewayConnection, OnGate
 
     const lobby = this.lobbies.find(lobby => lobby.roomId === roomId);
     if (!lobby) {
-      this.logger.warn(`Room with ID ${roomId} does not exist.`);
+      this.logger.warn(`drawer_draw_start : Room with ID ${roomId} does not exist.`);
     }
 
     client.to(roomId.toString()).emit('drawer_draw_start', request);
@@ -179,7 +176,7 @@ export class EventsGateway implements OnGatewayInit, OnGatewayConnection, OnGate
 
     const lobby = this.lobbies.find(lobby => lobby.roomId === roomId);
     if (!lobby) {
-      this.logger.warn(`Room with ID ${roomId} does not exist.`);
+      this.logger.warn(`drawer_draw_move : Room with ID ${roomId} does not exist.`);
     }
 
     client.to(roomId.toString()).emit('drawer_draw_move', request);
