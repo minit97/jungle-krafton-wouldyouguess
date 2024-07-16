@@ -29,6 +29,9 @@ public class CatchLiarUser {
     private String imageKey;
     private String imagePath;
 
+    private Boolean isWinner;
+    private Integer score;
+
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "catch_liar_game_id")
     @JsonIgnore
@@ -58,5 +61,10 @@ public class CatchLiarUser {
     public void uploadImageS3 (String key, String path) {
         this.imageKey = key;
         this.imagePath = path;
+    }
+
+    public void updateResult (Boolean result) {
+        this.isWinner = result;
+        this.score = result ? 10 : 0;
     }
 }

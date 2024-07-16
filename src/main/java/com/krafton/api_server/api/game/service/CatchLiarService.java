@@ -6,10 +6,12 @@ import com.amazonaws.services.s3.model.AmazonS3Exception;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.krafton.api_server.api.auth.domain.User;
+import com.krafton.api_server.api.auth.repository.UserRepository;
 import com.krafton.api_server.api.game.domain.CatchLiarGame;
 import com.krafton.api_server.api.game.domain.CatchLiarKeyword;
 import com.krafton.api_server.api.game.domain.CatchLiarUser;
 import com.krafton.api_server.api.game.dto.CatchLiarInfoResponseDto;
+import com.krafton.api_server.api.game.dto.CatchLiarResultResponseDto;
 import com.krafton.api_server.api.game.dto.CatchLiarVoteCandidatesResponseDto;
 import com.krafton.api_server.api.game.repository.CatchLiarKeywordRepository;
 import com.krafton.api_server.api.game.repository.CatchLiarGameRepository;
@@ -46,6 +48,7 @@ public class CatchLiarService {
     private String frontCloudUrl;
 
     private final AmazonS3 amazonS3;
+    private final UserRepository userRepository;
     private final RoomRepository roomRepository;
     private final CatchLiarGameRepository catchLiarGameRepository;
     private final CatchLiarKeywordRepository catchLiarKeywordRepository;
@@ -126,29 +129,38 @@ public class CatchLiarService {
         matchingUser.updateVotedCount();
     }
 
-    public String catchLiarResult(CatchLiarResultRequestDto request) {
+    public List<CatchLiarResultResponseDto> catchLiarResult(CatchLiarResultRequestDto request) {
         CatchLiarGame game = catchLiarGameRepository.findById(request.getCatchLiarGameId())
                 .orElseThrow(NoSuchElementException::new);
 
         List<CatchLiarUser> catchLiarUsers = game.getCatchLiarUsers();
-
         CatchLiarUser userWithMaxVotedCount = catchLiarUsers.stream()
                 .max(Comparator.comparingInt(CatchLiarUser::getVotedCount))
                 .orElseThrow(NoSuchElementException::new);
-
         CatchLiarUser liarUser = catchLiarUsers.stream()
                 .filter(CatchLiarUser::isLiar)
                 .findFirst()
                 .orElseThrow(NoSuchElementException::new);
 
-        boolean isLiar = request.getUserId().equals(liarUser.getUserId());
         boolean gameResult = userWithMaxVotedCount.equals(liarUser);
 
-        if (isLiar) {
-            return gameResult ? "패배" : "승리";
-        } else {
-            return gameResult ? "승리" : "패배";
+        List<CatchLiarResultResponseDto> response = new ArrayList<>();
+        for (CatchLiarUser catchLiarUser : catchLiarUsers) {
+            User user = userRepository.findById(catchLiarUser.getUserId())
+                    .orElseThrow(IllegalArgumentException::new);
+            if (gameResult && !catchLiarUser.getIsLiar()) {
+                catchLiarUser.updateResult(true);
+            } else if ( !gameResult && catchLiarUser.getIsLiar() ) {
+                catchLiarUser.updateResult(true);
+            } else {
+                catchLiarUser.updateResult(false);
+            }
+
+            CatchLiarResultResponseDto res = CatchLiarResultResponseDto.from(catchLiarUser, user);
+            response.add(res);
         }
+
+        return response;
     }
 
     public HashMap<String, String> catchLiarImgS3upload(Long userId, Long gameId, MultipartFile multipartFile) throws IOException {

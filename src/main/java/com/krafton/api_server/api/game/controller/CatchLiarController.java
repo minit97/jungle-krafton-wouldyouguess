@@ -1,7 +1,7 @@
 package com.krafton.api_server.api.game.controller;
 
-import com.krafton.api_server.api.game.domain.CatchLiarUser;
 import com.krafton.api_server.api.game.dto.CatchLiarInfoResponseDto;
+import com.krafton.api_server.api.game.dto.CatchLiarResultResponseDto;
 import com.krafton.api_server.api.game.dto.CatchLiarVoteCandidatesResponseDto;
 import com.krafton.api_server.api.game.service.CatchLiarService;
 import com.krafton.api_server.api.photo.domain.AwsS3;
@@ -50,9 +50,9 @@ public class CatchLiarController {
     }
 
     @GetMapping("/catchLiar/result")
-    public ResponseEntity<String> callCatchLiarResult(CatchLiarResultRequestDto request) {
-        String result = catchLiarService.catchLiarResult(request);
-        return ResponseEntity.ok(result);
+    public ResponseEntity<List<CatchLiarResultResponseDto>> callCatchLiarResult(CatchLiarResultRequestDto request) {
+        List<CatchLiarResultResponseDto> response = catchLiarService.catchLiarResult(request);
+        return ResponseEntity.ok(response);
     }
 
 
