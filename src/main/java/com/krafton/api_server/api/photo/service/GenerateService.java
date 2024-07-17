@@ -25,7 +25,7 @@ public class GenerateService {
 
     private final RestTemplate restTemplate;
 
-    public MultipartFile processImage(MultipartFile image, MultipartFile mask, String prompt) throws IOException {
+    public MultipartFile processImage(MultipartFile image, MultipartFile mask) throws IOException {
         MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
         body.add("image", new ByteArrayResource(image.getBytes()) {
             @Override
@@ -40,8 +40,6 @@ public class GenerateService {
                 return image.getOriginalFilename();
             }
         });
-
-        body.add("prompt", prompt);
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.MULTIPART_FORM_DATA);

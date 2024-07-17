@@ -105,8 +105,7 @@ public class FindDiffService {
 
         MultipartFile processedImage = generateService.processImage(
                 request.getImage(),
-                request.getMask(),
-                request.getPrompt()
+                request.getMask()
         );
 
         String generatedUrl = awsS3Service.upload(processedImage);
