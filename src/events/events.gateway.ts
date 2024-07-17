@@ -153,6 +153,7 @@ export class EventsGateway implements OnGatewayInit, OnGatewayConnection, OnGate
 
     lobby.voteCnt += 1
     if (lobby.userList.length === lobby.voteCnt) {
+      lobby.voteCnt = 0
       this.server.in(roomId.toString()).emit('game_result', request);
     }
   }
@@ -182,7 +183,11 @@ export class EventsGateway implements OnGatewayInit, OnGatewayConnection, OnGate
     client.to(roomId.toString()).emit('drawer_draw_move', request);
   }
 
-  //todo 후작업 : watcher(socketId or userId 판별)들에게만 보이는 레이저 포인터 생성 - 클라에서 삭제 로직
+  @SubscribeMessage('drawer_draw_end')
+  handleDrawerDrawEnd(@MessageBody() request: DrawerRequest,  @ConnectedSocket() client: Socket): void {
+
+  }
+
 
   @SubscribeMessage('watcher_draw_start')
   handleWatcherDrawStart(@MessageBody() request: DrawerRequest,  @ConnectedSocket() client: Socket): void {
@@ -191,6 +196,11 @@ export class EventsGateway implements OnGatewayInit, OnGatewayConnection, OnGate
 
   @SubscribeMessage('watcher_draw_move')
   handleWatcherDrawMove(@MessageBody() request: DrawerRequest,  @ConnectedSocket() client: Socket): void {
+
+  }
+
+  @SubscribeMessage('watcher_draw_end')
+  handleWatcherDrawEnd(@MessageBody() request: DrawerRequest,  @ConnectedSocket() client: Socket): void {
 
   }
 }
