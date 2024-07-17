@@ -25,7 +25,12 @@ public class GenerateService {
 
     private final RestTemplate restTemplate;
 
-    public MultipartFile processImage(MultipartFile image, MultipartFile mask) throws IOException {
+    public MultipartFile processImage(MultipartFile image,
+                                  Long maskX1,
+                                  Long maskY1,
+                                  Long maskX2,
+                                  Long maskY2
+                                  ) throws IOException {
         MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
         body.add("image", new ByteArrayResource(image.getBytes()) {
             @Override
@@ -33,13 +38,10 @@ public class GenerateService {
                 return image.getOriginalFilename();
             }
         });
-
-        body.add("mask", new ByteArrayResource(mask.getBytes()) {
-            @Override
-            public String getFilename() {
-                return image.getOriginalFilename();
-            }
-        });
+        body.add("maskX1", maskX1);
+        body.add("maskY1", maskY1);
+        body.add("maskX2", maskX2);
+        body.add("maskY2", maskY2);
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.MULTIPART_FORM_DATA);
