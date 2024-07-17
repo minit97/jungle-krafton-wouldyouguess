@@ -2,6 +2,7 @@ package com.krafton.api_server.api.photo.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
@@ -18,6 +19,9 @@ import java.io.InputStream;
 @RequiredArgsConstructor
 @Service
 public class GenerateService {
+
+    @Value("${jungle.krafton.ai-server}")
+    private String flaskServerUrl;
 
     private final RestTemplate restTemplate;
 
@@ -44,7 +48,6 @@ public class GenerateService {
 
         HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, headers);
 
-        String flaskServerUrl = "http://3.38.98.172:5000/";
         ResponseEntity<byte[]> response = restTemplate.exchange(
                 flaskServerUrl + "/inpaint",
                 HttpMethod.POST,
