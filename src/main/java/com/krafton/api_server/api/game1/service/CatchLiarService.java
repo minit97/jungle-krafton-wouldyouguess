@@ -170,8 +170,7 @@ public class CatchLiarService {
         String objectName = randomFileName(file, "catchLiar");
 
         // put s3
-        amazonS3.putObject(new PutObjectRequest(bucket, objectName, file)
-                .withCannedAcl(CannedAccessControlList.PublicRead));
+        amazonS3.putObject(new PutObjectRequest(bucket, objectName, file).withCannedAcl(CannedAccessControlList.PublicRead));
         String path = amazonS3.getUrl(bucket, objectName).toString();
         file.delete();
 
