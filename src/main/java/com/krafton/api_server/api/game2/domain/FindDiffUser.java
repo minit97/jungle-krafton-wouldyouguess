@@ -10,7 +10,8 @@ import static jakarta.persistence.FetchType.LAZY;
 @Entity
 public class FindDiffUser {
 
-    @Id @GeneratedValue
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "find_diff_user_id")
     private Long id;
 

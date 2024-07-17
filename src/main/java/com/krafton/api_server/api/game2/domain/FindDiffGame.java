@@ -11,7 +11,7 @@ import java.util.List;
 public class FindDiffGame {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "find_diff_game_id")
     private Long id;
 

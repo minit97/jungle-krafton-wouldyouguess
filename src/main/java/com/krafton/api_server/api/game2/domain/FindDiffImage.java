@@ -10,7 +10,8 @@ import static jakarta.persistence.FetchType.*;
 @Entity
 public class FindDiffImage {
 
-    @Id @GeneratedValue
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "find_diff_image_id")
     private Long id;
 
