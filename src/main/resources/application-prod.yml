@@ -56,3 +56,7 @@ cloud:
     stack:
       auto: false
     cloud_front_url:
+
+jungle:
+  krafton:
+    ai-server:
