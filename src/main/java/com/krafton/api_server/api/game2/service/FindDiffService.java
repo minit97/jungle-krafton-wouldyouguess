@@ -1,30 +1,31 @@
 package com.krafton.api_server.api.game2.service;
 
-import com.krafton.api_server.api.auth.domain.User;
+import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.model.CannedAccessControlList;
+import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.krafton.api_server.api.game2.domain.FindDiffGame;
-import com.krafton.api_server.api.game2.domain.FindDiffImage;
 import com.krafton.api_server.api.game2.domain.FindDiffUser;
 import com.krafton.api_server.api.game2.repository.FindDiffGameRepository;
-import com.krafton.api_server.api.game2.repository.FindDiffImageRepository;
 import com.krafton.api_server.api.game2.repository.FindDiffUserRepository;
 import com.krafton.api_server.api.photo.service.GenerateService;
-import com.krafton.api_server.api.photo.service.AwsS3Service;
 import com.krafton.api_server.api.room.domain.Room;
 import com.krafton.api_server.api.room.repository.RoomRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.krafton.api_server.api.game2.dto.FindDiffRequest.*;
+import static com.krafton.api_server.api.game2.dto.FindDiffResponse.*;
 import static com.krafton.api_server.api.game2.dto.FindDiffResponse.FindDiffGeneratedImageResponseDto;
 
 @Slf4j
@@ -33,97 +34,103 @@ import static com.krafton.api_server.api.game2.dto.FindDiffResponse.FindDiffGene
 @Service
 public class FindDiffService {
 
+    @Value("${cloud.aws.s3.bucket}")
+    private String bucket;
+
     private final RoomRepository roomRepository;
     private final FindDiffGameRepository findDiffGameRepository;
     private final FindDiffUserRepository findDiffUserRepository;
-    private final FindDiffImageRepository findDiffImageRepository;
-    private final AwsS3Service awsS3Service;
+    private final AmazonS3 amazonS3;
     private final GenerateService generateService;
 
     public Long startFindDiff(FindDiffRequestDto request) {
-
-        log.debug("Starting find diff game with roomId: {}", request.getRoomId());
-        if (request.getRoomId() == null) {
-            throw new IllegalArgumentException("Room ID must not be null");
-        }
-
-        FindDiffGame game = findDiffGameRepository.save(new FindDiffGame());
-
         Room room = roomRepository.findById(request.getRoomId())
                 .orElseThrow(() -> new NoSuchElementException("Room not found with id: " + request.getRoomId()));
 
-        for (User participant : room.getParticipants()) {
-            log.warn("participant : {}",participant);
-            FindDiffUser user = FindDiffUser.builder()
-                    .userId(participant.getId())
-                    .build();
+        List<FindDiffUser> findDiffUsers = room.getParticipants().stream()
+                .map(user -> FindDiffUser.builder()
+                        .userId(user.getId())
+                        .build()
+                ).toList();
+        findDiffUserRepository.saveAll(findDiffUsers);
 
-            findDiffUserRepository.save(user);
-            game.addUser(user);
-        }
+        FindDiffGame game = FindDiffGame.builder()
+                .users(findDiffUsers)
+                .build();
+        findDiffUsers.forEach(user -> user.setGame(game));
+        FindDiffGame savedGame = findDiffGameRepository.save(game);
 
-        return game.getId();
+        return savedGame.getId();
     }
 
-    public void saveImage(FindDiffImageRequestDto request) throws IOException {
-        Long userId = request.getUserId();
-        if (userId == null) {
-            throw new IllegalArgumentException("사용자 ID는 null일 수 없습니다");
-        }
+    public void callUploadImage(FindDiffImageUploadRequestDto request) throws IOException {
+        FindDiffUser user = findDiffUserRepository.findByUserId(request.getUserId())
+                .orElseThrow(() -> new EntityNotFoundException("ID: " + request.getUserId() + "에 해당하는 FindDiffUser를 찾을 수 없습니다"));
 
-        FindDiffUser user = findDiffUserRepository.findById(userId)
-                .orElseThrow(() -> new EntityNotFoundException("ID: " + userId + "에 해당하는 FindDiffUser를 찾을 수 없습니다"));
+        // s3 file upload
+        File originalFile = convertMultipartFileToFile(request.getOriginalImage())
+                .orElseThrow(() -> new IllegalArgumentException("MultipartFile -> File convert fail"));
+        String originalObjectName = randomFileName(originalFile, "findDiff_original");
+        amazonS3.putObject(new PutObjectRequest(bucket, originalObjectName, originalFile).withCannedAcl(CannedAccessControlList.PublicRead));
+        String originalPath = amazonS3.getUrl(bucket, originalObjectName).toString();
+        originalFile.delete();
 
+        File maskingFile = convertMultipartFileToFile(request.getMaskingImage())
+                .orElseThrow(() -> new IllegalArgumentException("MultipartFile -> File convert fail"));
+        String maskingObjectName = randomFileName(maskingFile, "findDiff_masking");
+        amazonS3.putObject(new PutObjectRequest(bucket, maskingObjectName, maskingFile).withCannedAcl(CannedAccessControlList.PublicRead));
+        String maskingPath = amazonS3.getUrl(bucket, maskingObjectName).toString();
+        maskingFile.delete();
 
-        String imageUrl = awsS3Service.upload(request.getImage());
+        user.uploadOriginalImage(originalObjectName, originalPath, maskingObjectName, maskingPath);
 
-        FindDiffImage image = user.getImage();
-        if (image == null) {
-            image = FindDiffImage.builder()
-                    .originalUrl(imageUrl).build();
-
-            image.updateUser(user);
-            user.updateImage(image);
-            findDiffImageRepository.save(image);
-        } else {
-            image.updateOriginalUrl(imageUrl);
-            findDiffImageRepository.save(image);
-        }
-
-        findDiffUserRepository.save(user);
+        saveGeneratedImage(user, request);
     }
 
-    public void saveGeneratedImage(FindDiffGeneratedImageRequestDto request) throws IOException {
-        Long userId = request.getUserId();
-        FindDiffUser user = findDiffUserRepository.findById(userId)
-                .orElseThrow(() -> new NoSuchElementException("User not found"));
-
-        log.warn("{}, {}, {}, {}", request.getMaskX1(),
-                request.getMaskY1(),
-                request.getMaskX2(),
-                request.getMaskY2());
-
+//    @Async
+//    @Transactional(Require_new)
+    public void saveGeneratedImage(FindDiffUser user, FindDiffImageUploadRequestDto request) throws IOException {
         MultipartFile processedImage = generateService.processImage(
-                request.getImage(),
+                request.getOriginalImage(),
                 request.getMaskX1(),
                 request.getMaskY1(),
                 request.getMaskX2(),
                 request.getMaskY2()
         );
 
-        String generatedUrl = awsS3Service.upload(processedImage);
+        // s3 file upload
+        File file = convertMultipartFileToFile(processedImage)
+                .orElseThrow(() -> new IllegalArgumentException("MultipartFile -> File convert fail"));
+        String objectName = randomFileName(file, "findDiff_generated_ai");
 
-        FindDiffImage image = user.getImage();
+        // put s3
+        amazonS3.putObject(new PutObjectRequest(bucket, objectName, file).withCannedAcl(CannedAccessControlList.PublicRead));
+        String path = amazonS3.getUrl(bucket, objectName).toString();
+        file.delete();
 
-        image.updateGen(generatedUrl);
-        image.updateMask(request.getMaskX1(), request.getMaskY1(),request.getMaskX2(), request.getMaskY2());
+        user.uploadAiGeneratedImage(objectName, path, request.getMaskX1(), request.getMaskY1(),request.getMaskX2(), request.getMaskY2());
+    }
 
-        image.updateUser(user);
-        user.updateImage(image);
+    private Optional<File> convertMultipartFileToFile(MultipartFile multipartFile){
+        File file = new File(System.getProperty("user.dir") + "/" + multipartFile.getOriginalFilename());
+        try {
+            if (file.createNewFile()) {
+                try (FileOutputStream fos = new FileOutputStream(file)) {
+                    fos.write(multipartFile.getBytes());
+                }
+                return Optional.of(file);
+            }
+        } catch (IOException e) {
+            if (file.exists()) {
+                file.delete();
+            }
+            throw new RuntimeException("Failed to convert MultipartFile to File", e);
+        }
+        return Optional.empty();
+    }
 
-        findDiffImageRepository.save(image);
-        findDiffUserRepository.save(user);
-
+    private String randomFileName(File file, String dirName) {
+        return dirName + "/" + UUID.randomUUID() + file.getName();
     }
 
     @Transactional(readOnly = true)
@@ -131,11 +138,14 @@ public class FindDiffService {
         FindDiffGame game = findDiffGameRepository.findById(gameId)
                 .orElseThrow(() -> new NoSuchElementException("Game not found"));
 
+        List<FindDiffUser> users = game.getUsers();
+        for (FindDiffUser user : users) {
+            log.warn("박현민 : {}", user.toString());
+        }
+
         return game.getUsers().stream()
                 .filter(user -> !user.getUserId().equals(userId))
-                .map(FindDiffUser::getImage)
-                .filter(Objects::nonNull)
-                .map(FindDiffImage::getOriginalUrl)
+                .map(FindDiffUser::getOriginalImageUrl)
                 .collect(Collectors.toList());
     }
 
@@ -144,27 +154,22 @@ public class FindDiffService {
         FindDiffGame game = findDiffGameRepository.findById(gameId)
                 .orElseThrow(() -> new NoSuchElementException("Game not found"));
 
-        log.warn("Game found: {}", game);
-        log.warn("Users in game: {}", game.getUsers());
-
         List<FindDiffGeneratedImageResponseDto> images = game.getUsers().stream()
-                .peek(user -> log.warn("Processing user: {}", user))
                 .filter(user -> !user.getUserId().equals(userId))
-                .peek(user -> log.warn("User passed filter: {}", user))
-                .map(FindDiffUser::getImage)
-                .filter(Objects::nonNull)
-                .peek(image -> log.warn("Image found: {}", image))
-                .map(image -> new FindDiffGeneratedImageResponseDto(
-                        image.getGeneratedUrl(),
-                        image.getMaskX1(),
-                        image.getMaskY1(),
-                        image.getMaskX2(),
-                        image.getMaskY2()
-                ))
-                .collect(Collectors.toList());
+                .map(FindDiffGeneratedImageResponseDto::from)
+                .toList();
 
-        log.warn("Generated images: {}", images);
         return images;
     }
 
+
+    public List<FindDiffResultDto> callFindDiffResultList(Long gameId) {
+        FindDiffGame game = findDiffGameRepository.findById(gameId)
+                .orElseThrow(() -> new NoSuchElementException("Game not found"));
+
+        List<FindDiffResultDto> images = game.getUsers().stream()
+                .map(FindDiffResultDto::from)
+                .toList();
+        return images;
+    }
 }

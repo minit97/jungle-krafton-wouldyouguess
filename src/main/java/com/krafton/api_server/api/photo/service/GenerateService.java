@@ -25,12 +25,7 @@ public class GenerateService {
 
     private final RestTemplate restTemplate;
 
-    public MultipartFile processImage(MultipartFile image,
-                                  Long maskX1,
-                                  Long maskY1,
-                                  Long maskX2,
-                                  Long maskY2
-                                  ) throws IOException {
+    public MultipartFile processImage(MultipartFile image, Long maskX1, Long maskY1, Long maskX2, Long maskY2) throws IOException {
         MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
         body.add("image", new ByteArrayResource(image.getBytes()) {
             @Override
