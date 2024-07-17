@@ -163,7 +163,7 @@ public class CatchLiarService {
         return response;
     }
 
-    public HashMap<String, String> catchLiarImgS3upload(Long userId, Long gameId, MultipartFile multipartFile) throws IOException {
+    public HashMap<String, String> catchLiarImgS3upload(Long userId, Long gameId, MultipartFile multipartFile) {
         File file = convertMultipartFileToFile(multipartFile)
                 .orElseThrow(() -> new IllegalArgumentException("MultipartFile -> File convert fail"));
 
@@ -189,7 +189,7 @@ public class CatchLiarService {
         response.put("imagePath", matchingUser.getImagePath());
         return response;
     }
-    private Optional<File> convertMultipartFileToFile(MultipartFile multipartFile) throws IOException {
+    private Optional<File> convertMultipartFileToFile(MultipartFile multipartFile){
         File file = new File(System.getProperty("user.dir") + "/" + multipartFile.getOriginalFilename());
         try {
             if (file.createNewFile()) {
