@@ -12,7 +12,7 @@ import {Server, Socket} from 'socket.io';
 import {Logger} from "@nestjs/common";
 import {
   DrawerRequest,
-  GameEndRequest,
+  GameEndRequest, GameLoadingRequest,
   GameRoundChangeRequest,
   GameStartRequest,
   Lobby,
@@ -56,7 +56,7 @@ export class EventsGateway implements OnGatewayInit, OnGatewayConnection, OnGate
       const newLobby: Lobby = {
         roomId: roomId,
         userList: [userId],
-        voteCnt: 0
+        loadCnt: 0
       };
       this.lobbies.push(newLobby);
       lobby = newLobby;
@@ -141,20 +141,23 @@ export class EventsGateway implements OnGatewayInit, OnGatewayConnection, OnGate
     this.server.in(roomId.toString()).emit('game_end', request);
   }
 
-  @SubscribeMessage('game_result')
-  handleGameResultAait(@MessageBody() request: GameRoundChangeRequest, @ConnectedSocket() client: Socket)  {
+  @SubscribeMessage('game_loading')
+  handleGameResultAait(@MessageBody() request: GameLoadingRequest, @ConnectedSocket() client: Socket)  {
 
-    const { userId, roomId, gameId, round } = request;
+    const { roomId, nextPageUrl } = request;
 
     const lobby = this.lobbies.find(lobby => lobby.roomId === roomId);
     if (!lobby) {
       this.logger.warn(`game_result : Room with ID ${roomId} does not exist.`);
     }
 
-    lobby.voteCnt += 1
-    if (lobby.userList.length === lobby.voteCnt) {
-      lobby.voteCnt = 0
-      this.server.in(roomId.toString()).emit('game_result', request);
+    console.log("1. ",roomId);
+    console.log("2. ",lobby.loadCnt);
+    console.log("3. ",lobby.userList.length);
+    lobby.loadCnt += 1
+    if (lobby.userList.length === lobby.loadCnt) {
+      lobby.loadCnt = 0
+      this.server.in(roomId.toString()).emit('game_loading', request);
     }
   }
 

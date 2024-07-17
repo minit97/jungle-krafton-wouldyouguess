@@ -8,7 +8,7 @@ export interface LobbyRequest {
 export interface Lobby {
     roomId: number;
     userList: number[];
-    voteCnt: number;
+    loadCnt: number;
 }
 
 
@@ -31,6 +31,11 @@ export interface GameEndRequest {
     userId: number;
     roomId: number;
     gameId: number;
+}
+
+export interface GameLoadingRequest {
+    roomId: number;
+    nextPageUrl: string;
 }
 
 // drawer_draw_start, drawer_draw_move
