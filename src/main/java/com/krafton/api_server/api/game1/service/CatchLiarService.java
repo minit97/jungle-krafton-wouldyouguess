@@ -191,12 +191,18 @@ public class CatchLiarService {
     }
     private Optional<File> convertMultipartFileToFile(MultipartFile multipartFile) throws IOException {
         File file = new File(System.getProperty("user.dir") + "/" + multipartFile.getOriginalFilename());
-
-        if (file.createNewFile()) {
-            try (FileOutputStream fos = new FileOutputStream(file)){
-                fos.write(multipartFile.getBytes());
+        try {
+            if (file.createNewFile()) {
+                try (FileOutputStream fos = new FileOutputStream(file)) {
+                    fos.write(multipartFile.getBytes());
+                }
+                return Optional.of(file);
             }
-            return Optional.of(file);
+        } catch (IOException e) {
+            if (file.exists()) {
+                file.delete();
+            }
+            throw new RuntimeException("Failed to convert MultipartFile to File", e);
         }
         return Optional.empty();
     }
