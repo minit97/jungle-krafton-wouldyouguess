@@ -14,7 +14,7 @@ import {
   DrawerRequest,
   GameEndRequest, GameLoadingRequest,
   GameRoundChangeRequest,
-  GameStartRequest,
+  GameStartRequest, LaserRequest,
   Lobby,
   LobbyRequest
 } from "./events.interface";
@@ -193,17 +193,31 @@ export class EventsGateway implements OnGatewayInit, OnGatewayConnection, OnGate
 
 
   @SubscribeMessage('watcher_draw_start')
-  handleWatcherDrawStart(@MessageBody() request: DrawerRequest,  @ConnectedSocket() client: Socket): void {
+  handleWatcherDrawStart(@MessageBody() request: LaserRequest,  @ConnectedSocket() client: Socket): void {
+    const { roomId } = request;
 
+    const lobby = this.lobbies.find(lobby => lobby.roomId === roomId);
+    if (!lobby) {
+      this.logger.warn(`watcher_draw_start : Room with ID ${roomId} does not exist.`);
+    }
+
+    client.to(roomId.toString()).emit('watcher_draw_start', request);
   }
 
   @SubscribeMessage('watcher_draw_move')
-  handleWatcherDrawMove(@MessageBody() request: DrawerRequest,  @ConnectedSocket() client: Socket): void {
+  handleWatcherDrawMove(@MessageBody() request: LaserRequest,  @ConnectedSocket() client: Socket): void {
+    const { roomId } = request;
 
+    const lobby = this.lobbies.find(lobby => lobby.roomId === roomId);
+    if (!lobby) {
+      this.logger.warn(`watcher_draw_move : Room with ID ${roomId} does not exist.`);
+    }
+
+    client.to(roomId.toString()).emit('watcher_draw_move', request);
   }
 
   @SubscribeMessage('watcher_draw_end')
-  handleWatcherDrawEnd(@MessageBody() request: DrawerRequest,  @ConnectedSocket() client: Socket): void {
+  handleWatcherDrawEnd(@MessageBody() request: LaserRequest,  @ConnectedSocket() client: Socket): void {
 
   }
 }

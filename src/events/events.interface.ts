@@ -50,9 +50,9 @@ export interface DrawerRequest {
 }
 
 // watcher_draw_start, watcher_draw_move
-export interface WatcherRequest {
-    tool: string;
+export interface LaserRequest {
     xAxis: number;
     yAxis: number;
+    time: number;
     roomId: number;
 }
