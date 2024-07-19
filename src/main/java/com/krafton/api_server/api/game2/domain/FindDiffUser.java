@@ -18,6 +18,8 @@ public class FindDiffUser {
     @Column(name = "user_id")
     private Long userId;
 
+    private String nickname;
+
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "find_diff_game_id")
     private FindDiffGame game;
@@ -37,8 +39,13 @@ public class FindDiffUser {
     private Long score;
 
     @Builder
-    public FindDiffUser(Long userId) {
+    public FindDiffUser(Long userId, String nickname) {
         this.userId = userId;
+        this.nickname = nickname;
+    }
+
+    public void updateScore(Long score) {
+        this.score += score;
     }
 
     public void uploadOriginalImage(String origianlKey, String originalImageUrl, String maskingImageKey, String maskingImageUrl) {

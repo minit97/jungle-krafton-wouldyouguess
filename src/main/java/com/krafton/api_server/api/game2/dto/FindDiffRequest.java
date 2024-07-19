@@ -43,14 +43,17 @@ public class FindDiffRequest {
         }
     }
 
+    @Getter
+    @Setter
+    public static class FindDiffChanceRequestDto {
+        private Long userId;
+        private Long chance;
+    }
 
     @Getter
     @Setter
-    public static class FindDiffScoreRequestDto {
-        private Long gameId;
+    public static class FindDiffCorrectRequestDto {
         private Long userId;
-        private Long score;
+        private Long correct;
     }
-
-
 }
