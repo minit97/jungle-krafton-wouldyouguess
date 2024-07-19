@@ -50,6 +50,7 @@ public class FindDiffService {
         List<FindDiffUser> findDiffUsers = room.getParticipants().stream()
                 .map(user -> FindDiffUser.builder()
                         .userId(user.getId())
+                        .nickname(user.getUsername())
                         .build()
                 ).toList();
         findDiffUserRepository.saveAll(findDiffUsers);
@@ -162,7 +163,6 @@ public class FindDiffService {
         return images;
     }
 
-
     public List<FindDiffResultDto> callFindDiffResultList(Long gameId) {
         FindDiffGame game = findDiffGameRepository.findById(gameId)
                 .orElseThrow(() -> new NoSuchElementException("Game not found"));
@@ -171,5 +171,29 @@ public class FindDiffService {
                 .map(FindDiffResultDto::from)
                 .toList();
         return images;
+    }
+
+    public void updateChance(FindDiffChanceRequestDto request) {
+        FindDiffUser user = findDiffUserRepository.findByUserId(request.getUserId())
+                .orElseThrow(() -> new NoSuchElementException("User not found"));
+
+        user.updateScore(request.getChance() * 10);
+    }
+
+    public void updateCorrect(FindDiffCorrectRequestDto request) {
+        FindDiffUser user = findDiffUserRepository.findByUserId(request.getUserId())
+                .orElseThrow(() -> new NoSuchElementException("User not found"));
+
+        user.updateScore(request.getCorrect() * 100);
+    }
+
+    public List<FindDiffScoreDto> getLeaderboard(Long gameId) {
+        FindDiffGame game = findDiffGameRepository.findById(gameId)
+                .orElseThrow(() -> new NoSuchElementException("Game not found"));
+
+        return game.getUsers().stream()
+                .map(FindDiffScoreDto::from)
+                .toList();
+
     }
 }

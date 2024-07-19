@@ -52,5 +52,20 @@ public class FindDiffResponse {
         }
     }
 
+    @Getter
+    @Builder
+    public static class FindDiffScoreDto {
+        private String nickname;
+        private Long score;
+
+        public static FindDiffScoreDto from(FindDiffUser user) {
+            if (user == null) return null;
+
+            return FindDiffScoreDto.builder()
+                    .nickname(user.getNickname())
+                    .score(user.getScore())
+                    .build();
+        }
+    }
 
 }

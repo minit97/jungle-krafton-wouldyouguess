@@ -73,4 +73,21 @@ public class FindDiffController {
         return ResponseEntity.ok(response);
     }
 
+    @PostMapping("/chance")
+    public ResponseEntity<String> updateChance(@RequestBody FindDiffChanceRequestDto request) {
+        findDiffService.updateChance(request);
+        return ResponseEntity.ok("Ok");
+    }
+
+    @PostMapping("/correct")
+    public ResponseEntity<String> updateCorrect(@RequestBody FindDiffCorrectRequestDto request) {
+        findDiffService.updateCorrect(request);
+        return ResponseEntity.ok("Ok");
+    }
+
+    @GetMapping("/leaderboard/{gameId}")
+    public ResponseEntity<List<FindDiffScoreDto>> getLeaderboard(@PathVariable("gameId") Long gameId) {
+        List<FindDiffScoreDto> leaderboard = findDiffService.getLeaderboard(gameId);
+        return ResponseEntity.ok(leaderboard);
+    }
 }
