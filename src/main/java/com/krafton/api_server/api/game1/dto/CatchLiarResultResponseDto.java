@@ -13,6 +13,8 @@ public class CatchLiarResultResponseDto {
     private String nickname;
     private Boolean isLiar;
     private String keyword;
+    private String imageKey;
+    private String imagePath;
     private Boolean isWinner;
     private Integer score;
 
@@ -25,6 +27,8 @@ public class CatchLiarResultResponseDto {
                 .nickname(user.getNickname())
                 .isLiar(catchLiarUser.getIsLiar())
                 .keyword(catchLiarUser.getKeyword())
+                .imageKey(catchLiarUser.getImageKey())
+                .imagePath(catchLiarUser.getImagePath())
                 .isWinner(catchLiarUser.getIsWinner())
                 .score(catchLiarUser.getScore())
                 .build();

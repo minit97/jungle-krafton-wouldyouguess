@@ -13,11 +13,6 @@ public class FindDiffRequest {
         private Long roomId;
     }
 
-    @Getter
-    @Setter
-    public static class FindDiffUserRequestDto {
-        private Long userId;
-    }
 
     @Getter
     @Setter
@@ -43,14 +38,12 @@ public class FindDiffRequest {
         }
     }
 
-
     @Getter
     @Setter
     public static class FindDiffScoreRequestDto {
-        private Long gameId;
         private Long userId;
-        private Long score;
+        private int chance;
+        private Boolean isFound;
     }
-
 
 }
