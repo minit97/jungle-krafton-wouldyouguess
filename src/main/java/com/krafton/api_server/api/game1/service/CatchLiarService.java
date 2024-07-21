@@ -44,9 +44,6 @@ public class CatchLiarService {
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
 
-    @Value("${cloud.aws.cloud_front_url}")
-    private String frontCloudUrl;
-
     private final AmazonS3 amazonS3;
     private final UserRepository userRepository;
     private final RoomRepository roomRepository;
@@ -210,6 +207,5 @@ public class CatchLiarService {
         }
         amazonS3.deleteObject(bucket, awsS3.getKey());
     }
-
 
 }

@@ -5,7 +5,6 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import net.minidev.json.annotate.JsonIgnore;
 
 import static jakarta.persistence.FetchType.LAZY;
 
@@ -34,7 +33,6 @@ public class CatchLiarUser {
 
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "catch_liar_game_id")
-    @JsonIgnore
     private CatchLiarGame catchLiarGame;
 
     @Builder
