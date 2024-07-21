@@ -1,28 +1,24 @@
 package com.krafton.api_server.api.game2.dto;
 
-import com.krafton.api_server.api.auth.domain.User;
-import com.krafton.api_server.api.auth.dto.UserResponseDto;
 import com.krafton.api_server.api.game2.domain.FindDiffUser;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 
 public class FindDiffResponse {
     @Getter
-    @AllArgsConstructor
     @Builder
-    public static class FindDiffGeneratedImageResponseDto {
-        private String generatedUrl;
+    public static class FindDiffAiGeneratedImageResponseDto {
+        private String aiGeneratedImageUrl;
         private Long maskX1;
         private Long maskY1;
         private Long maskX2;
         private Long maskY2;
 
-        public static FindDiffGeneratedImageResponseDto from(FindDiffUser user) {
+        public static FindDiffAiGeneratedImageResponseDto from(FindDiffUser user) {
             if(user == null) return null;
 
-            return FindDiffGeneratedImageResponseDto.builder()
-                    .generatedUrl(user.getGeneratedImageUrl())
+            return FindDiffAiGeneratedImageResponseDto.builder()
+                    .aiGeneratedImageUrl(user.getAiGeneratedImageUrl())
                     .maskX1(user.getMaskX1())
                     .maskX2(user.getMaskX2())
                     .maskY1(user.getMaskY1())
@@ -32,36 +28,48 @@ public class FindDiffResponse {
     }
 
     @Getter
-    @AllArgsConstructor
     @Builder
-    public static class FindDiffResultDto {
+    public static class FindDiffGameImagesDto {
+        private String originalImageKey;
+        private String originalImageUrl;
         private String maskingImageKey;
         private String maskingImageUrl;
-        private String generatedImageKey;
-        private String generatedImageUrl;
 
-        public static FindDiffResultDto from(FindDiffUser user) {
+        private String aiGeneratedImageKey;
+        private String aiGeneratedImageUrl;
+        private Long maskX1;
+        private Long maskY1;
+        private Long maskX2;
+        private Long maskY2;
+
+        public static FindDiffGameImagesDto from(FindDiffUser user) {
             if(user == null) return null;
 
-            return FindDiffResultDto.builder()
+            return FindDiffGameImagesDto.builder()
+                    .originalImageKey(user.getOriginalImageKey())
+                    .originalImageUrl(user.getOriginalImageUrl())
                     .maskingImageKey(user.getMaskingImageKey())
                     .maskingImageUrl(user.getMaskingImageUrl())
-                    .generatedImageKey(user.getGeneratedImageKey())
-                    .generatedImageUrl(user.getGeneratedImageUrl())
+                    .aiGeneratedImageKey(user.getAiGeneratedImageKey())
+                    .aiGeneratedImageUrl(user.getAiGeneratedImageUrl())
+                    .maskX1(user.getMaskX1())
+                    .maskX2(user.getMaskX2())
+                    .maskY1(user.getMaskY1())
+                    .maskY2(user.getMaskY2())
                     .build();
         }
     }
 
     @Getter
     @Builder
-    public static class FindDiffScoreDto {
+    public static class FindDiffResultDto {
         private String nickname;
-        private Long score;
+        private Integer score;
 
-        public static FindDiffScoreDto from(FindDiffUser user) {
+        public static FindDiffResultDto from(FindDiffUser user) {
             if (user == null) return null;
 
-            return FindDiffScoreDto.builder()
+            return FindDiffResultDto.builder()
                     .nickname(user.getNickname())
                     .score(user.getScore())
                     .build();

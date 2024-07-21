@@ -1,6 +1,5 @@
 package com.krafton.api_server.api.game2.controller;
 
-import com.krafton.api_server.api.game2.dto.FindDiffResponse;
 import com.krafton.api_server.api.game2.service.FindDiffService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -8,12 +7,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.util.List;
 
 import static com.krafton.api_server.api.game2.dto.FindDiffRequest.*;
 import static com.krafton.api_server.api.game2.dto.FindDiffResponse.*;
-import static com.krafton.api_server.api.game2.dto.FindDiffResponse.FindDiffGeneratedImageResponseDto;
 
 
 @Slf4j
@@ -30,16 +27,15 @@ public class FindDiffController {
         return ResponseEntity.ok(gameId);
     }
 
-
     @PostMapping("/upload")
-    public ResponseEntity<String> uploadImage(
+    public ResponseEntity<FindDiffAiGeneratedImageResponseDto> uploadImage(
             @RequestParam("originalImage") MultipartFile originalImage,
             @RequestParam("maskingImage") MultipartFile maskingImage,
             @RequestParam("userId") Long userId,
             @RequestParam("maskX1") Long maskX1,
             @RequestParam("maskY1") Long maskY1,
             @RequestParam("maskX2") Long maskX2,
-            @RequestParam("maskY2") Long maskY2) throws IOException {
+            @RequestParam("maskY2") Long maskY2) {
 
         FindDiffImageUploadRequestDto request = FindDiffImageUploadRequestDto.builder()
                 .originalImage(originalImage)
@@ -51,20 +47,14 @@ public class FindDiffController {
                 .maskY2(maskY2)
                 .build();
 
-        findDiffService.callUploadImage(request);
-        return ResponseEntity.ok("Ok");
+        FindDiffAiGeneratedImageResponseDto responseDto = findDiffService.callUploadImage(request);
+        return ResponseEntity.ok(responseDto);
     }
 
-    @GetMapping("/original/image/{gameId}")
-    public ResponseEntity<List<String>> getOriginalImages(@PathVariable("gameId") Long gameId, @RequestParam("userId") Long userId) {
-        List<String> originalImages = findDiffService.getOriginalImages(gameId, userId);
-        return ResponseEntity.ok(originalImages);
-    }
-
-    @GetMapping("/generated/image/{gameId}")
-    public ResponseEntity<List<FindDiffGeneratedImageResponseDto>> getGeneratedImages(@PathVariable("gameId") Long gameId, @RequestParam("userId") Long userId) {
-        List<FindDiffGeneratedImageResponseDto> generatedImages = findDiffService.getGeneratedImages(gameId, userId);
-        return ResponseEntity.ok(generatedImages);
+    @GetMapping("/images/{gameId}")
+    public ResponseEntity<List<FindDiffGameImagesDto>> callFindDiffGameImages(@PathVariable("gameId") Long gameId, @RequestParam("userId") Long userId) {
+        List<FindDiffGameImagesDto> response = findDiffService.getFindDiffGameImages(gameId, userId);
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/result/{gameId}")
@@ -73,21 +63,9 @@ public class FindDiffController {
         return ResponseEntity.ok(response);
     }
 
-    @PostMapping("/chance")
-    public ResponseEntity<String> updateChance(@RequestBody FindDiffChanceRequestDto request) {
+    @PostMapping("/score")
+    public void updateChance(@RequestBody FindDiffScoreRequestDto request) {
         findDiffService.updateChance(request);
-        return ResponseEntity.ok("Ok");
     }
 
-    @PostMapping("/correct")
-    public ResponseEntity<String> updateCorrect(@RequestBody FindDiffCorrectRequestDto request) {
-        findDiffService.updateCorrect(request);
-        return ResponseEntity.ok("Ok");
-    }
-
-    @GetMapping("/leaderboard/{gameId}")
-    public ResponseEntity<List<FindDiffScoreDto>> getLeaderboard(@PathVariable("gameId") Long gameId) {
-        List<FindDiffScoreDto> leaderboard = findDiffService.getLeaderboard(gameId);
-        return ResponseEntity.ok(leaderboard);
-    }
 }

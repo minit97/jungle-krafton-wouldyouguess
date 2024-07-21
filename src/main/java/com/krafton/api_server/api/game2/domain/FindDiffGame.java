@@ -26,4 +26,12 @@ public class FindDiffGame {
     public FindDiffGame(List<FindDiffUser> users) {
         this.users = users;
     }
+
+    public void addUser(FindDiffUser user) {
+        if (users == null) {
+            users = new ArrayList<>();
+        }
+        users.add(user);
+        user.setGame(this);
+    }
 }
