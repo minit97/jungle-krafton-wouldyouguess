@@ -100,7 +100,14 @@ public class CatchLiarService {
                 .findFirst()
                 .orElseThrow(NoSuchElementException::new);
 
-        return CatchLiarInfoResponseDto.from(matchingUser, request.getRound(), catchLiarUsers.size());
+        CatchLiarUser thisTurnUser = catchLiarUsers.stream()
+                .filter(user -> user.getDrawOrder().equals(request.getRound()))
+                .findFirst()
+                .orElseThrow(NoSuchElementException::new);
+        User user = userRepository.findById(thisTurnUser.getUserId())
+                .orElseThrow(IllegalArgumentException::new);
+
+        return CatchLiarInfoResponseDto.from(matchingUser, request.getRound(), catchLiarUsers.size(), user.getUsername());
     }
 
 

@@ -13,8 +13,9 @@ public class CatchLiarInfoResponseDto {
     private String keyword;
     private Boolean isDrawing;
     private int totalRound;
+    private String thisTurnNick;
 
-    public static CatchLiarInfoResponseDto from(CatchLiarUser catchLiarUser, Integer round, int userCnt) {
+    public static CatchLiarInfoResponseDto from(CatchLiarUser catchLiarUser, Integer round, int userCnt, String thisTurnNick) {
         if(catchLiarUser == null) return null;
 
         return CatchLiarInfoResponseDto.builder()
@@ -22,6 +23,7 @@ public class CatchLiarInfoResponseDto {
                 .keyword(catchLiarUser.getKeyword())
                 .isDrawing(catchLiarUser.getDrawOrder() == round)
                 .totalRound(userCnt)
+                .thisTurnNick(thisTurnNick)
                 .build();
     }
 }
