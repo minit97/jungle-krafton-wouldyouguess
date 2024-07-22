@@ -7,4 +7,5 @@ import java.util.Optional;
 
 public interface FindDiffUserRepository extends JpaRepository<FindDiffUser, Long> {
     Optional<FindDiffUser> findByUserId(Long userId);
+    Optional<FindDiffUser> findByGameIdAndUserId(Long gameId, Long userId);
 }

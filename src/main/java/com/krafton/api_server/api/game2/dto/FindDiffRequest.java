@@ -19,6 +19,7 @@ public class FindDiffRequest {
     @NoArgsConstructor
     public static class FindDiffImageUploadRequestDto {
         private Long userId;
+        private Long gameId;
         private MultipartFile originalImage;
         private MultipartFile maskingImage;
         private Long maskX1;
@@ -27,8 +28,9 @@ public class FindDiffRequest {
         private Long maskY2;
 
         @Builder
-        public FindDiffImageUploadRequestDto(Long userId, MultipartFile originalImage, MultipartFile maskingImage, Long maskX1, Long maskY1, Long maskX2, Long maskY2) {
+        public FindDiffImageUploadRequestDto(Long userId, Long gameId, MultipartFile originalImage, MultipartFile maskingImage, Long maskX1, Long maskY1, Long maskX2, Long maskY2) {
             this.userId = userId;
+            this.gameId = gameId;
             this.originalImage = originalImage;
             this.maskingImage = maskingImage;
             this.maskX1 = maskX1;

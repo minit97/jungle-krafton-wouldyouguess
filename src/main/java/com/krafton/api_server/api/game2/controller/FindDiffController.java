@@ -32,6 +32,7 @@ public class FindDiffController {
             @RequestParam("originalImage") MultipartFile originalImage,
             @RequestParam("maskingImage") MultipartFile maskingImage,
             @RequestParam("userId") Long userId,
+            @RequestParam("gameId") Long gameId,
             @RequestParam("maskX1") Long maskX1,
             @RequestParam("maskY1") Long maskY1,
             @RequestParam("maskX2") Long maskX2,
@@ -41,6 +42,7 @@ public class FindDiffController {
                 .originalImage(originalImage)
                 .maskingImage(maskingImage)
                 .userId(userId)
+                .gameId(gameId)
                 .maskX1(maskX1)
                 .maskX2(maskX2)
                 .maskY1(maskY1)

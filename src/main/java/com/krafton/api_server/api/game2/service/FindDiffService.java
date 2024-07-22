@@ -64,7 +64,7 @@ public class FindDiffService {
 
     @Transactional
     public FindDiffAiGeneratedImageResponseDto callUploadImage(FindDiffImageUploadRequestDto request) {
-        FindDiffUser user = findDiffUserRepository.findByUserId(request.getUserId())
+        FindDiffUser user = findDiffUserRepository.findByGameIdAndUserId(request.getGameId(), request.getUserId())
                 .orElseThrow(() -> new EntityNotFoundException("ID: " + request.getUserId() + "에 해당하는 FindDiffUser를 찾을 수 없습니다"));
 
         uploadS3Image(user, request.getOriginalImage(), request.getMaskingImage());
