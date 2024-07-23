@@ -38,6 +38,13 @@ export interface GameLoadingRequest {
     nextPageUrl: string;
 }
 
+export interface GameVotingRequest {
+    roomId: number;
+    userId: number;
+    votingUserId: number;
+    previousVotingUserId:number;
+}
+
 // drawer_draw_start, drawer_draw_move
 export interface DrawerRequest {
     tool: string;

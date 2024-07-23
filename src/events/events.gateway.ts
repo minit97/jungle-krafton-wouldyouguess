@@ -14,7 +14,7 @@ import {
   DrawerRequest,
   GameEndRequest, GameLoadingRequest,
   GameRoundChangeRequest,
-  GameStartRequest, LaserRequest,
+  GameStartRequest, GameVotingRequest, LaserRequest,
   Lobby,
   LobbyRequest
 } from "./events.interface";
@@ -151,9 +151,6 @@ export class EventsGateway implements OnGatewayInit, OnGatewayConnection, OnGate
       this.logger.warn(`game_result : Room with ID ${roomId} does not exist.`);
     }
 
-    console.log("1. ",roomId);
-    console.log("2. ",lobby.loadCnt);
-    console.log("3. ",lobby.userList.length);
     lobby.loadCnt += 1
     if (lobby.userList.length === lobby.loadCnt) {
       lobby.loadCnt = 0
@@ -186,12 +183,6 @@ export class EventsGateway implements OnGatewayInit, OnGatewayConnection, OnGate
     client.to(roomId.toString()).emit('drawer_draw_move', request);
   }
 
-  @SubscribeMessage('drawer_draw_end')
-  handleDrawerDrawEnd(@MessageBody() request: DrawerRequest,  @ConnectedSocket() client: Socket): void {
-
-  }
-
-
   @SubscribeMessage('watcher_draw_start')
   handleWatcherDrawStart(@MessageBody() request: LaserRequest,  @ConnectedSocket() client: Socket): void {
     const { roomId } = request;
@@ -216,9 +207,17 @@ export class EventsGateway implements OnGatewayInit, OnGatewayConnection, OnGate
     client.to(roomId.toString()).emit('watcher_draw_move', request);
   }
 
-  @SubscribeMessage('watcher_draw_end')
-  handleWatcherDrawEnd(@MessageBody() request: LaserRequest,  @ConnectedSocket() client: Socket): void {
+  @SubscribeMessage('game_voting')
+  handleGameVoting(@MessageBody() request: GameVotingRequest,  @ConnectedSocket() client: Socket): void {
+    const { roomId, userId, votingUserId, previousVotingUserId } = request;
 
+    const lobby = this.lobbies.find(lobby => lobby.roomId === roomId);
+    if (!lobby) {
+      this.logger.warn(`game_voting : Room with ID ${roomId} does not exist.`);
+    }
+
+    this.server.in(roomId.toString()).emit('game_voting', request);
   }
+
 }
 
