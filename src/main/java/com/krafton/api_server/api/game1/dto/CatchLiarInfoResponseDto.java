@@ -1,5 +1,6 @@
 package com.krafton.api_server.api.game1.dto;
 
+import com.krafton.api_server.api.auth.domain.User;
 import com.krafton.api_server.api.game1.domain.CatchLiarUser;
 import lombok.*;
 
@@ -14,8 +15,9 @@ public class CatchLiarInfoResponseDto {
     private Boolean isDrawing;
     private int totalRound;
     private String thisTurnNick;
+    private Long thisTurnUserId;
 
-    public static CatchLiarInfoResponseDto from(CatchLiarUser catchLiarUser, Integer round, int userCnt, String thisTurnNick) {
+    public static CatchLiarInfoResponseDto from(CatchLiarUser catchLiarUser, Integer round, int userCnt, User user) {
         if(catchLiarUser == null) return null;
 
         return CatchLiarInfoResponseDto.builder()
@@ -23,7 +25,8 @@ public class CatchLiarInfoResponseDto {
                 .keyword(catchLiarUser.getKeyword())
                 .isDrawing(catchLiarUser.getDrawOrder() == round)
                 .totalRound(userCnt)
-                .thisTurnNick(thisTurnNick)
+                .thisTurnNick(user.getUsername())
+                .thisTurnUserId(user.getId())
                 .build();
     }
 }

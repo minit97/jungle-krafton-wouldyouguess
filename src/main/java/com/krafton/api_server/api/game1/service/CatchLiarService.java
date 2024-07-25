@@ -107,7 +107,7 @@ public class CatchLiarService {
         User user = userRepository.findById(thisTurnUser.getUserId())
                 .orElseThrow(IllegalArgumentException::new);
 
-        return CatchLiarInfoResponseDto.from(matchingUser, request.getRound(), catchLiarUsers.size(), user.getUsername());
+        return CatchLiarInfoResponseDto.from(matchingUser, request.getRound(), catchLiarUsers.size(), user);
     }
 
 
