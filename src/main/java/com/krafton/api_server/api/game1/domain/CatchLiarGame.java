@@ -10,6 +10,8 @@ import net.minidev.json.annotate.JsonIgnore;
 import java.util.ArrayList;
 import java.util.List;
 
+import static jakarta.persistence.FetchType.LAZY;
+
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
@@ -25,9 +27,14 @@ public class CatchLiarGame {
     @JsonIgnore
     private List<CatchLiarUser> catchLiarUsers = new ArrayList<>();
 
+    @ManyToOne(fetch = LAZY)
+    @JoinColumn(name = "catch_liar_keyword_id")
+    private CatchLiarKeyword catchLiarKeyword;
+
     @Builder
-    public CatchLiarGame(Integer round, CatchLiarUser liar) {
+    public CatchLiarGame(Integer round, CatchLiarUser liar, CatchLiarKeyword catchLiarKeyword) {
         this.round = round;
+        this.catchLiarKeyword = catchLiarKeyword;
     }
 
     public void addUsers(CatchLiarUser user) {

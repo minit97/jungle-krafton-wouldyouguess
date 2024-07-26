@@ -10,10 +10,7 @@ import com.krafton.api_server.api.auth.repository.UserRepository;
 import com.krafton.api_server.api.game1.domain.CatchLiarGame;
 import com.krafton.api_server.api.game1.domain.CatchLiarKeyword;
 import com.krafton.api_server.api.game1.domain.CatchLiarUser;
-import com.krafton.api_server.api.game1.dto.CatchLiarInfoListResponseDto;
-import com.krafton.api_server.api.game1.dto.CatchLiarInfoResponseDto;
-import com.krafton.api_server.api.game1.dto.CatchLiarResultResponseDto;
-import com.krafton.api_server.api.game1.dto.CatchLiarVoteCandidatesResponseDto;
+import com.krafton.api_server.api.game1.dto.*;
 import com.krafton.api_server.api.game1.repository.CatchLiarKeywordRepository;
 import com.krafton.api_server.api.game1.repository.CatchLiarGameRepository;
 import com.krafton.api_server.api.game1.repository.CatchLiarUserRepository;
@@ -66,6 +63,7 @@ public class CatchLiarService {
 
         CatchLiarGame game = CatchLiarGame.builder()
                 .round(1)
+                .catchLiarKeyword(keyword)
                 .build();
         CatchLiarGame startedGame = catchLiarGameRepository.save(game);
 
@@ -235,4 +233,10 @@ public class CatchLiarService {
     }
 
 
+    public CatchLiarKeywordResponse catchLiarKeyword(Long gameId) {
+        CatchLiarGame game = catchLiarGameRepository.findById(gameId)
+                .orElseThrow(NoSuchElementException::new);
+        CatchLiarKeyword catchLiarKeyword = game.getCatchLiarKeyword();
+        return CatchLiarKeywordResponse.from(catchLiarKeyword);
+    }
 }

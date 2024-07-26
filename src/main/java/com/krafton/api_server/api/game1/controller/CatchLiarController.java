@@ -1,9 +1,6 @@
 package com.krafton.api_server.api.game1.controller;
 
-import com.krafton.api_server.api.game1.dto.CatchLiarInfoListResponseDto;
-import com.krafton.api_server.api.game1.dto.CatchLiarInfoResponseDto;
-import com.krafton.api_server.api.game1.dto.CatchLiarResultResponseDto;
-import com.krafton.api_server.api.game1.dto.CatchLiarVoteCandidatesResponseDto;
+import com.krafton.api_server.api.game1.dto.*;
 import com.krafton.api_server.api.game1.service.CatchLiarService;
 import com.krafton.api_server.api.photo.domain.AwsS3;
 import lombok.RequiredArgsConstructor;
@@ -73,5 +70,11 @@ public class CatchLiarController {
     @DeleteMapping("/catchLiar/image")
     public void callCatchLiarImgS3Remove (AwsS3 awsS3) {
         catchLiarService.catchLiarImgS3Remove(awsS3);
+    }
+
+    @GetMapping("/catchLiar/{gameId}/keyword")
+    public ResponseEntity<CatchLiarKeywordResponse> callCatchLiarKeyword(@PathVariable Long gameId) {
+        CatchLiarKeywordResponse response = catchLiarService.catchLiarKeyword(gameId);
+        return ResponseEntity.ok(response);
     }
 }
