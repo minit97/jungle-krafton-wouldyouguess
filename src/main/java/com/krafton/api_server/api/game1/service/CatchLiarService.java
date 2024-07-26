@@ -74,7 +74,7 @@ public class CatchLiarService {
             numbers.add(i + 1);
         }
 //        Collections.shuffle(numbers);
-        String[] colors = {"red", "green", "yellow", "blue", "purple"};
+        String[] colors = {"red", "green", "blue", "purple"};
 
         for (int i = 0; i < room.getParticipants().size(); i++) {
             User participant = room.getParticipants().get(i);
