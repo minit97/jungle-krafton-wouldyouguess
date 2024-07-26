@@ -44,6 +44,7 @@ public class FindDiffRequest {
     @Setter
     public static class FindDiffScoreRequestDto {
         private Long userId;
+        private Long gameId;
         private int chance;
         private Boolean isFound;
     }

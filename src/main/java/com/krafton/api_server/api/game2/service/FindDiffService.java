@@ -152,7 +152,7 @@ public class FindDiffService {
 
     @Transactional
     public void updateChance(FindDiffScoreRequestDto request) {
-        FindDiffUser user = findDiffUserRepository.findByUserId(request.getUserId())
+        FindDiffUser user = findDiffUserRepository.findByGameIdAndUserId(request.getGameId(), request.getUserId())
                 .orElseThrow(() -> new NoSuchElementException("User not found"));
 
         int foundScore = request.getIsFound() ? 100 : 0;
