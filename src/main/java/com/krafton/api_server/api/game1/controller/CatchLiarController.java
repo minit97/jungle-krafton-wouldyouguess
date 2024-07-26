@@ -1,5 +1,6 @@
 package com.krafton.api_server.api.game1.controller;
 
+import com.krafton.api_server.api.game1.dto.CatchLiarInfoListResponseDto;
 import com.krafton.api_server.api.game1.dto.CatchLiarInfoResponseDto;
 import com.krafton.api_server.api.game1.dto.CatchLiarResultResponseDto;
 import com.krafton.api_server.api.game1.dto.CatchLiarVoteCandidatesResponseDto;
@@ -33,8 +34,14 @@ public class CatchLiarController {
     }
 
     @GetMapping("/catchLiar/info")
-    public ResponseEntity<CatchLiarInfoResponseDto> callCatchLiarKeyword(CatchLiarInfoRequestDto request) {
+    public ResponseEntity<CatchLiarInfoResponseDto> callCatchLiarInfo(CatchLiarInfoRequestDto request) {
         CatchLiarInfoResponseDto response = catchLiarService.catchLiarInfo(request);
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/catchLiar/infos")
+    public ResponseEntity<List<CatchLiarInfoListResponseDto>> callCatchLiarInfoList(@RequestParam("catchLiarGameId") Long gameId) {
+        List<CatchLiarInfoListResponseDto> response = catchLiarService.catchLiarInfoList(gameId);
         return ResponseEntity.ok(response);
     }
 

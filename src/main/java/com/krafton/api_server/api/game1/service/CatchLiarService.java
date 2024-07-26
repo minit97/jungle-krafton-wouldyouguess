@@ -10,6 +10,7 @@ import com.krafton.api_server.api.auth.repository.UserRepository;
 import com.krafton.api_server.api.game1.domain.CatchLiarGame;
 import com.krafton.api_server.api.game1.domain.CatchLiarKeyword;
 import com.krafton.api_server.api.game1.domain.CatchLiarUser;
+import com.krafton.api_server.api.game1.dto.CatchLiarInfoListResponseDto;
 import com.krafton.api_server.api.game1.dto.CatchLiarInfoResponseDto;
 import com.krafton.api_server.api.game1.dto.CatchLiarResultResponseDto;
 import com.krafton.api_server.api.game1.dto.CatchLiarVoteCandidatesResponseDto;
@@ -63,16 +64,17 @@ public class CatchLiarService {
 
         CatchLiarKeyword keyword = catchLiarKeywordRepository.findRandomCatchLiarKeyword();
 
-        List<Integer> numbers = new ArrayList<>();
-        for (int i = 0; i < room.getParticipants().size(); i++) {
-            numbers.add(i + 1);
-        }
-        Collections.shuffle(numbers);
-
         CatchLiarGame game = CatchLiarGame.builder()
                 .round(1)
                 .build();
         CatchLiarGame startedGame = catchLiarGameRepository.save(game);
+
+        List<Integer> numbers = new ArrayList<>();
+        for (int i = 0; i < room.getParticipants().size(); i++) {
+            numbers.add(i + 1);
+        }
+//        Collections.shuffle(numbers);
+        String[] colors = {"red", "green", "yellow", "blue", "purple"};
 
         for (int i = 0; i < room.getParticipants().size(); i++) {
             User participant = room.getParticipants().get(i);
@@ -82,6 +84,7 @@ public class CatchLiarService {
                     .isLiar(i == randomIndex)
                     .keyword(i == randomIndex ? keyword.getLiarKeyword() : keyword.getKeyword())
                     .drawOrder(numbers.get(i))
+                    .userColor(colors[i])
                     .build();
             catchLiarUserRepository.save(user);
 
@@ -107,7 +110,17 @@ public class CatchLiarService {
         User user = userRepository.findById(thisTurnUser.getUserId())
                 .orElseThrow(IllegalArgumentException::new);
 
-        return CatchLiarInfoResponseDto.from(matchingUser, request.getRound(), catchLiarUsers.size(), user.getUsername());
+        return CatchLiarInfoResponseDto.from(matchingUser, request.getRound(), catchLiarUsers.size(), user);
+    }
+
+    public List<CatchLiarInfoListResponseDto> catchLiarInfoList(Long gameId) {
+        CatchLiarGame game = catchLiarGameRepository.findById(gameId)
+                .orElseThrow(NoSuchElementException::new);
+        List<CatchLiarUser> catchLiarUsers = game.getCatchLiarUsers();
+        List<CatchLiarInfoListResponseDto> response = catchLiarUsers.stream()
+                .map((CatchLiarInfoListResponseDto::from))
+                .toList();
+        return response;
     }
 
 
@@ -220,5 +233,6 @@ public class CatchLiarService {
         }
         amazonS3.deleteObject(bucket, awsS3.getKey());
     }
+
 
 }
