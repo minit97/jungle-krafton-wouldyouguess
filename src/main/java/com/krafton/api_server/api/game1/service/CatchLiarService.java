@@ -81,8 +81,8 @@ public class CatchLiarService {
 
             CatchLiarUser user = CatchLiarUser.builder()
                     .userId(participant.getId())
-                    .isLiar(i == 2)
-                    .keyword(i == 2 ? keyword.getLiarKeyword() : keyword.getKeyword())
+                    .isLiar(i == 1)
+                    .keyword(i == 1 ? keyword.getLiarKeyword() : keyword.getKeyword())
                     .drawOrder(numbers.get(i))
                     .userColor(colors[i])
                     .build();
