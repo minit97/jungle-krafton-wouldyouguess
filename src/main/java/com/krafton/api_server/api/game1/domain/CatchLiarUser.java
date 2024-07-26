@@ -30,18 +30,20 @@ public class CatchLiarUser {
 
     private Boolean isWinner;
     private Integer score;
+    private String userColor;
 
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "catch_liar_game_id")
     private CatchLiarGame catchLiarGame;
 
     @Builder
-    public CatchLiarUser(Long userId, Boolean isLiar, String keyword, Integer drawOrder) {
+    public CatchLiarUser(Long userId, Boolean isLiar, String keyword, Integer drawOrder, String userColor) {
         this.userId = userId;
         this.isLiar = isLiar;
         this.keyword = keyword;
         this.drawOrder = drawOrder;
         this.votedCount = 0;
+        this.userColor = userColor;
     }
 
     public void catchLiarGameStart(CatchLiarGame catchLiarGame) {

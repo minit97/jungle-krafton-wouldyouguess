@@ -16,6 +16,7 @@ public class CatchLiarInfoResponseDto {
     private int totalRound;
     private String thisTurnNick;
     private Long thisTurnUserId;
+    private String userColor;
 
     public static CatchLiarInfoResponseDto from(CatchLiarUser catchLiarUser, Integer round, int userCnt, User user) {
         if(catchLiarUser == null) return null;
@@ -27,6 +28,7 @@ public class CatchLiarInfoResponseDto {
                 .totalRound(userCnt)
                 .thisTurnNick(user.getUsername())
                 .thisTurnUserId(user.getId())
+                .userColor(catchLiarUser.getUserColor())
                 .build();
     }
 }
