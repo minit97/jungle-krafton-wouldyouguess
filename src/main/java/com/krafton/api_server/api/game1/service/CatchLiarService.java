@@ -71,7 +71,7 @@ public class CatchLiarService {
         for (int i = 0; i < room.getParticipants().size(); i++) {
             numbers.add(i + 1);
         }
-//        Collections.shuffle(numbers);
+        Collections.shuffle(numbers);
         String[] colors = {"red", "green", "blue", "purple"};
 
         for (int i = 0; i < room.getParticipants().size(); i++) {
@@ -79,8 +79,8 @@ public class CatchLiarService {
 
             CatchLiarUser user = CatchLiarUser.builder()
                     .userId(participant.getId())
-                    .isLiar(i == 1)
-                    .keyword(i == 1 ? keyword.getLiarKeyword() : keyword.getKeyword())
+                    .isLiar(i == randomIndex)
+                    .keyword(i == randomIndex ? keyword.getLiarKeyword() : keyword.getKeyword())
                     .drawOrder(numbers.get(i))
                     .userColor(colors[i])
                     .build();
