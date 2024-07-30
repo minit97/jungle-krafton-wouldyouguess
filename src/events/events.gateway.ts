@@ -44,8 +44,6 @@ export class EventsGateway implements OnGatewayInit, OnGatewayConnection, OnGate
 
   @SubscribeMessage('room_create')
   handleRoomCreate(@MessageBody() request:LobbyRequest, @ConnectedSocket() client: Socket) {
-    // this.logger.log(`room_create: ${JSON.stringify(request)}`);
-
     const { roomId, userId } = request;
     let lobby = this.lobbies.find(lobby => lobby.roomId === roomId);
 
@@ -62,13 +60,11 @@ export class EventsGateway implements OnGatewayInit, OnGatewayConnection, OnGate
       lobby = newLobby;
     }
 
-    client.join(roomId.toString());   // 사용자를 roomId 방에 추가
+    client.join(roomId.toString());
   }
 
   @SubscribeMessage('room_join')
   handleRoomJoin(@MessageBody() request:LobbyRequest, @ConnectedSocket() client: Socket)  {
-    // this.logger.log(`room_join: ${JSON.stringify(request)}`);
-
     const { roomId, userId } = request;
 
     const lobby = this.lobbies.find(lobby => lobby.roomId === roomId);
@@ -84,8 +80,6 @@ export class EventsGateway implements OnGatewayInit, OnGatewayConnection, OnGate
 
   @SubscribeMessage('room_exit')
   handleRoomExit(@MessageBody() request:LobbyRequest, @ConnectedSocket() client: Socket) {
-    // this.logger.log(`room_exit: ${JSON.stringify(request)}`);
-
     const { roomId, userId } = request;
 
     const lobby = this.lobbies.find(lobby => lobby.roomId === roomId);
@@ -101,8 +95,6 @@ export class EventsGateway implements OnGatewayInit, OnGatewayConnection, OnGate
 
   @SubscribeMessage('game_start')
   handleGameJoin(@MessageBody() request: GameStartRequest, @ConnectedSocket() client: Socket)  {
-    this.logger.log(`game_start: ${JSON.stringify(request)}`);
-
     const { mode, userId, roomId, gameId } = request;
 
     const lobby = this.lobbies.find(lobby => lobby.roomId === roomId);
@@ -115,8 +107,6 @@ export class EventsGateway implements OnGatewayInit, OnGatewayConnection, OnGate
 
   @SubscribeMessage('game_round_change')
   handleGameTurnChange(@MessageBody() request: GameRoundChangeRequest, @ConnectedSocket() client: Socket)  {
-    this.logger.log(`game_round_change: ${JSON.stringify(request)}`);
-
     const { userId, roomId, gameId, round } = request;
 
     const lobby = this.lobbies.find(lobby => lobby.roomId === roomId);
@@ -129,8 +119,6 @@ export class EventsGateway implements OnGatewayInit, OnGatewayConnection, OnGate
 
   @SubscribeMessage('game_end')
   handleGameEnd(@MessageBody() request: GameEndRequest, @ConnectedSocket() client: Socket) {
-    this.logger.log(`game_end: ${JSON.stringify(request)}`);
-
     const { userId, roomId, gameId } = request;
 
     const lobby = this.lobbies.find(lobby => lobby.roomId === roomId);
@@ -143,7 +131,6 @@ export class EventsGateway implements OnGatewayInit, OnGatewayConnection, OnGate
 
   @SubscribeMessage('game_loading')
   handleGameResultAait(@MessageBody() request: GameLoadingRequest, @ConnectedSocket() client: Socket)  {
-
     const { roomId, nextPageUrl } = request;
 
     const lobby = this.lobbies.find(lobby => lobby.roomId === roomId);
