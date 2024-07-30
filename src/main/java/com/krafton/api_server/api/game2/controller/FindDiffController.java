@@ -13,7 +13,6 @@ import static com.krafton.api_server.api.game2.dto.FindDiffRequest.*;
 import static com.krafton.api_server.api.game2.dto.FindDiffResponse.*;
 
 
-@Slf4j
 @RequiredArgsConstructor
 @RequestMapping("/api/findDiff")
 @RestController

@@ -2,7 +2,6 @@ package com.krafton.api_server.api.room.controller;
 
 import com.krafton.api_server.api.room.service.RoomService;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -11,7 +10,6 @@ import java.util.List;
 import static com.krafton.api_server.api.room.dto.RoomRequest.RoomCreateRequest;
 import static com.krafton.api_server.api.room.dto.RoomRequest.RoomUser;
 
-@Slf4j
 @RequiredArgsConstructor
 @RequestMapping("/api")
 @RestController

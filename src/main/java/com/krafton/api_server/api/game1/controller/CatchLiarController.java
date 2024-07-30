@@ -16,7 +16,6 @@ import java.util.List;
 import static com.krafton.api_server.api.game1.dto.CatchLiarRequest.*;
 import static com.krafton.api_server.api.game1.dto.CatchLiarRequest.CatchLiarInfoRequestDto;
 
-@Slf4j
 @RequiredArgsConstructor
 @RequestMapping("/api")
 @RestController
