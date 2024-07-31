@@ -1,0 +1,62 @@
+spring:
+  servlet:
+    multipart: # multipart 업로드 위한 설정
+      enabled: true
+      file-size-threshold: 0B
+      max-file-size: 100MB
+      max-request-size: 100MB
+
+  h2:
+    console:
+      enabled: true
+
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://엔드포인트.rds.amazonaws.com/스키마명?serverTimezone=Asia/Seoul
+    username: 로그인
+    password: 비밀번호
+
+  jpa:
+    database-platform: org.hibernate.dialect.MySQLDialect
+    hibernate:
+      ddl-auto: create
+    properties:
+      hibernate:
+        format_sql: false
+        show_sql: true
+
+logging.level:
+  org.hibernate.SQL: debug
+  org.hibernate.orm.jdbc.bind: trace
+  org.springframework.security: DEBUG
+
+
+kakao:
+  client-name: kakao
+  client-id:
+  redirect-uri:
+  token-uri:
+  scope:
+    - profile_nickname
+    - account_email
+  user-info:
+
+jwt:
+  secret:
+
+cloud:
+  aws:
+    credentials:
+      access-key:
+      secret-key:
+    region:
+      static: us-east-1  # 버킷의 리전
+    s3:
+      bucket:
+    stack:
+      auto: false
+    cloud_front_url:
+
+jungle:
+  krafton:
+    ai-server:

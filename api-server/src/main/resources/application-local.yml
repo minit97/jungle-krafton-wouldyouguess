@@ -1,0 +1,65 @@
+spring:
+  servlet:
+    multipart: # multipart 업로드 위한 설정
+      enabled: true
+      file-size-threshold: 0B
+      max-file-size: 100MB
+      max-request-size: 100MB
+
+  h2:
+    console:
+      enabled: true
+
+  datasource:
+    url: 'jdbc:h2:mem:testdb'
+    driver-class-name: org.h2.Driver
+    username: 'sa'
+    password: ''
+
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    hibernate:
+      ddl-auto: create
+    properties:
+      hibernate:
+        format_sql: false
+        show_sql: true
+    defer-datasource-initialization: true
+  sql:
+    init:
+      mode: always
+
+logging.level:
+  org.hibernate.SQL: debug
+  org.hibernate.orm.jdbc.bind: trace
+  org.springframework.security: DEBUG
+
+kakao:
+  client-name: kakao
+  client-id: 47591bf8fcd26598c6b8745218ae96c2
+  redirect-uri: "http://localhost:5173/auth/kakao/callback"
+  token-uri : "https://kauth.kakao.com/oauth/token"
+  scope:
+    - profile_nickname
+    - account_email
+  user-info : "https://kapi.kakao.com/v2/user/me"
+
+jwt:
+  secret : 123h4kljh123jkl4123k4h1234kjlh14123kl4h23kljh
+
+cloud:
+  aws:
+    credentials:
+      access-key:
+      secret-key:
+    region:
+      static: us-east-1  # 버킷의 리전
+    s3:
+      bucket:
+    stack:
+      auto: false
+    cloud_front_url:
+
+jungle:
+  krafton:
+    ai-server:
