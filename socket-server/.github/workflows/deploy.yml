@@ -1,0 +1,42 @@
+name: deploy
+
+on:
+  push:
+    branches:
+      - 'release'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Create env
+        run: |
+          touch .env
+          echo "${{ secrets.ENV }}" > .env
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name : Build Docker Image & Push to Docker Hub
+        run: |
+          docker build --platform linux/amd64 -t minit97/nestjs-demo .
+          docker push minit97/nestjs-demo
+
+      - name: Deploy to EB
+        uses: einaregilsson/beanstalk-deploy@v18
+        with:
+          aws_access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          application_name: docker-nestjs
+          environment_name: Docker-nestjs-env
+          version_label: deploy-${{ github.sha }}
+          region: ap-northeast-2
+          deployment_package: docker-compose.yml
+          wait_for_environment_recovery: 300
