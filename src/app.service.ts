@@ -1,5 +1,4 @@
-import { Injectable } from '@nestjs/common';
-import * as process from "process";
+import {Injectable} from '@nestjs/common';
 import {ConfigService} from "@nestjs/config";
 
 @Injectable()

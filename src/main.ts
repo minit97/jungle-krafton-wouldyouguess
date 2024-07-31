@@ -1,6 +1,5 @@
 import {NestFactory} from '@nestjs/core';
 import {AppModule} from './app.module';
-import {LivekitModule} from './livekit/livekit.module';
 import * as process from 'process';
 
 declare const module: any;

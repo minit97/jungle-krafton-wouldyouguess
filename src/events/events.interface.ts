@@ -1,5 +1,3 @@
-
-// room_create, room_join, room_exit
 export interface LobbyRequest {
     roomId: number;
     userId: number;
@@ -11,8 +9,6 @@ export interface Lobby {
     loadCnt: number;
 }
 
-
-// game_start, game_round_change, game_end
 export interface GameStartRequest {
     mode: number;
     userId: number;
@@ -45,7 +41,6 @@ export interface GameVotingRequest {
     previousVotingUserId:number;
 }
 
-// drawer_draw_start, drawer_draw_move
 export interface DrawerRequest {
     tool: string;
     xAxis: number;
@@ -56,8 +51,7 @@ export interface DrawerRequest {
     roomId: number;
 }
 
-// watcher_draw_start, watcher_draw_move
-export interface LaserRequest {
+export interface WatcherRequest {
     xAxis: number;
     yAxis: number;
     time: number;
