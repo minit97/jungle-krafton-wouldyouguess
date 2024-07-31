@@ -21,8 +21,6 @@ public class Room {
     @OneToMany(mappedBy = "room")
     private List<User> participants = new ArrayList<>();
 
-//    private String roomUrl;
-
     @Builder
     public Room(User user) {
         joinRoom(user);

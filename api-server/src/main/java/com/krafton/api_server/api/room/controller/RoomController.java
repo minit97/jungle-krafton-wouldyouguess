@@ -1,5 +1,7 @@
 package com.krafton.api_server.api.room.controller;
 
+import com.krafton.api_server.api.room.dto.request.RoomRequestDto;
+import com.krafton.api_server.api.room.dto.response.RoomUserResponseDto;
 import com.krafton.api_server.api.room.service.RoomService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -7,37 +9,34 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-import static com.krafton.api_server.api.room.dto.RoomRequest.RoomCreateRequest;
-import static com.krafton.api_server.api.room.dto.RoomRequest.RoomUser;
-
 @RequiredArgsConstructor
-@RequestMapping("/api")
+@RequestMapping("/api/room")
 @RestController
 public class RoomController {
 
     private final RoomService roomService;
 
-    @PostMapping("/room")
-    public ResponseEntity<Long> callCreateRoom(@RequestBody RoomCreateRequest roomCreateRequest) {
-        Long roomId = roomService.createRoom(roomCreateRequest);
+    @PostMapping()
+    public ResponseEntity<Long> callCreateRoom(@RequestBody RoomRequestDto request) {
+        Long roomId = roomService.createRoom(request);
         return ResponseEntity.ok(roomId);
     }
 
-    @GetMapping("/room/{roomId}/users")
-    public ResponseEntity<List<RoomUser>> callRoomUsers(@PathVariable Long roomId) {
-        List<RoomUser> roomUsers = roomService.getRoomUsers(roomId);
-        return ResponseEntity.ok(roomUsers);
+    @GetMapping("/{roomId}/users")
+    public ResponseEntity<List<RoomUserResponseDto>> callRoomUsers(@PathVariable Long roomId) {
+        List<RoomUserResponseDto> response = roomService.getRoomUsers(roomId);
+        return ResponseEntity.ok(response);
     }
 
-    @PostMapping("/room/{roomId}/join")
-    public ResponseEntity<Long> callJoinRoom(@PathVariable Long roomId, @RequestBody RoomCreateRequest roomCreateRequest) {
-        Long reponseRoomId = roomService.joinRoom(roomId, roomCreateRequest);
+    @PostMapping("/{roomId}/join")
+    public ResponseEntity<Long> callJoinRoom(@PathVariable Long roomId, @RequestBody RoomRequestDto request) {
+        Long reponseRoomId = roomService.joinRoom(roomId, request);
         return ResponseEntity.ok(reponseRoomId);
     }
 
-    @PostMapping("/room/{roomId}/exit")
-    public void callExitRoom(@PathVariable Long roomId, @RequestBody RoomCreateRequest roomCreateRequest) {
-        roomService.exitRoom(roomId, roomCreateRequest);
+    @PostMapping("/{roomId}/exit")
+    public void callExitRoom(@PathVariable Long roomId, @RequestBody RoomRequestDto request) {
+        roomService.exitRoom(roomId, request);
     }
 
 
