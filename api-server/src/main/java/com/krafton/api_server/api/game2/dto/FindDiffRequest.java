@@ -13,10 +13,8 @@ public class FindDiffRequest {
         private Long roomId;
     }
 
-
     @Getter
     @Setter
-    @NoArgsConstructor
     public static class FindDiffImageUploadRequestDto {
         private Long userId;
         private Long gameId;
@@ -26,18 +24,6 @@ public class FindDiffRequest {
         private Long maskY1;
         private Long maskX2;
         private Long maskY2;
-
-        @Builder
-        public FindDiffImageUploadRequestDto(Long userId, Long gameId, MultipartFile originalImage, MultipartFile maskingImage, Long maskX1, Long maskY1, Long maskX2, Long maskY2) {
-            this.userId = userId;
-            this.gameId = gameId;
-            this.originalImage = originalImage;
-            this.maskingImage = maskingImage;
-            this.maskX1 = maskX1;
-            this.maskY1 = maskY1;
-            this.maskX2 = maskX2;
-            this.maskY2 = maskY2;
-        }
     }
 
     @Getter
