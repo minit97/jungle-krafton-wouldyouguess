@@ -2,10 +2,8 @@ package com.krafton.api_server.api.game2.controller;
 
 import com.krafton.api_server.api.game2.service.FindDiffService;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 

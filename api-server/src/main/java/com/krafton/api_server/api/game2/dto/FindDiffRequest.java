@@ -1,8 +1,6 @@
 package com.krafton.api_server.api.game2.dto;
 
-import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.web.multipart.MultipartFile;
 

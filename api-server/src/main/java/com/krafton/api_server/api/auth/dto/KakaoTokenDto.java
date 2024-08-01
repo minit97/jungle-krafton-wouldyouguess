@@ -1,7 +1,6 @@
 package com.krafton.api_server.api.auth.dto;
 
 import lombok.Data;
-import lombok.Getter;
 
 @Data
 public class KakaoTokenDto {
