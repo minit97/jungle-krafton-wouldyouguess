@@ -1,8 +1,8 @@
-package com.krafton.api_server.api.game1.dto;
+package com.krafton.api_server.api.game1.dto.request;
 
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.web.multipart.MultipartFile;
 
 public class CatchLiarRequest {
     @Getter
@@ -26,11 +26,25 @@ public class CatchLiarRequest {
         private Long votingUserId;
     }
 
-
     @Getter
     @Setter
     public static class CatchLiarResultRequestDto {
         private Long catchLiarGameId;
         private Long userId;
     }
+
+    @Getter
+    @Setter
+    public static class CatchLiarImageUploadRequestDto {
+        private Long userId;
+        private Long catchLiarGameId;
+        private MultipartFile file;
+    }
+
+    @Setter
+    @Getter
+    public static class CatchLiarRemoveRequestDto {
+        private String imageKey;
+    }
+
 }

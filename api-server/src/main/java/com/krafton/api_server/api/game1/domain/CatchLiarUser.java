@@ -1,5 +1,6 @@
 package com.krafton.api_server.api.game1.domain;
 
+import com.krafton.api_server.api.external.vo.AwsS3;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -58,9 +59,9 @@ public class CatchLiarUser {
         return isLiar;
     }
 
-    public void uploadImageS3 (String key, String path) {
-        this.imageKey = key;
-        this.imagePath = path;
+    public void updateUploadImageS3(AwsS3 image) {
+        this.imageKey = image.getObjectname();
+        this.imagePath = image.getPath();
     }
 
     public void updateResult (Boolean result) {

@@ -1,13 +1,10 @@
-package com.krafton.api_server.api.game1.dto;
+package com.krafton.api_server.api.game1.dto.response;
 
 import com.krafton.api_server.api.game1.domain.CatchLiarUser;
 import lombok.*;
 
 @Getter
-@Setter
 @Builder
-@NoArgsConstructor
-@AllArgsConstructor
 public class CatchLiarVoteCandidatesResponseDto {
     private Long userId;
     private String userColor;

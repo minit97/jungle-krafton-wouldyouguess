@@ -1,4 +1,4 @@
-package com.krafton.api_server.api.game1.dto;
+package com.krafton.api_server.api.game1.dto.response;
 
 import com.krafton.api_server.api.auth.domain.User;
 import com.krafton.api_server.api.game1.domain.CatchLiarUser;
@@ -6,7 +6,6 @@ import lombok.*;
 
 @Getter
 @Builder
-@AllArgsConstructor
 public class CatchLiarResultResponseDto {
     private Long userId;
     private String username;
