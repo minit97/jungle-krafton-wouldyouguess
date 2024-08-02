@@ -94,8 +94,14 @@
 - 시연 [유튜브 링크](https://youtu.be/2We4Kfgisso)
 - 발표 [유튜브 링크](https://youtu.be/M3kvW-cpoxg)
 
-</br></br>
+</br></br></br></br>
 
+# 🗓️ 리펙토링 기간
+2024년 7월 29일 ~ 2024년 8월 1일  
+
+# ERD
+- https://www.erdcloud.com/p/49gkRcrtAwkbnxAfh
+<img width="770" alt="image" src="https://github.com/user-attachments/assets/0c3b17a0-a6e4-42ee-bf61-f4ae185cc874">
 
 
 
