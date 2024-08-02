@@ -30,8 +30,23 @@
 <img width="600" alt="main-page" src="https://github.com/user-attachments/assets/42b11f4f-f3d6-4d60-9673-76b0978b852d">
 
 ## Game1
+### 1-1. 키워드 확인 후 그림그리기
+- WebRTC를 활용한 영상&음성
+- WebSocket을 활용한 캔버스 공유
+<img width="600" alt="draw1" src="https://github.com/user-attachments/assets/4d3b7cde-d361-4ebc-8674-dc227d3ba37a">
+<img width="600" alt="draw2" src="https://github.com/user-attachments/assets/69fc5739-4da2-4697-b522-52b1254ef4ae">
+
+### 1-2. 참여자의 음성말고도 관전자들끼의 캔버스 소통 요소 추가
+<img width="600" alt="laser" src="https://github.com/user-attachments/assets/a5be748b-1588-4023-803f-ed7bef942b29">
+
+### 2. 투표하기
+<img width="600" alt="vote" src="https://github.com/user-attachments/assets/2a05aac6-b85e-4645-a286-d4a1220e3bd2">
 
 
+### 3. 결과창
+<img width="600" alt="result" src="https://github.com/user-attachments/assets/8662a071-fdbc-4c3b-b0ea-1b5735050fb1">
+
+</br></br>
 
 ## Game2
 ### 1. AI 이미지 생성을 활용한 새로운 이미지 생성
