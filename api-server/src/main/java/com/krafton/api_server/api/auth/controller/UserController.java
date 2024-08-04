@@ -11,18 +11,19 @@ import org.springframework.web.bind.annotation.*;
 
 @Slf4j
 @RequiredArgsConstructor
+@RequestMapping("/api")
 @RestController
 public class UserController {
 
     private final UserService userService;
 
-    @PatchMapping("/api/users/{userId}/nickname")
+    @PatchMapping("/users/{userId}/nickname")
     public ResponseEntity<UserResponseDto> callUpdateNickname(@PathVariable Long userId, @RequestBody UserRequestDto request) {
         UserResponseDto updatedUser = userService.updateNickname(userId, request);
         return ResponseEntity.ok(updatedUser);
     }
 
-    @PostMapping("/api/temp/login")
+    @PostMapping("/temp/login")
     public ResponseEntity<UserResponseDto> tempLogin(@RequestBody TempLogin tempLogin) {
         UserResponseDto response = userService.getTempLogin(tempLogin);
         return ResponseEntity.ok(response);
