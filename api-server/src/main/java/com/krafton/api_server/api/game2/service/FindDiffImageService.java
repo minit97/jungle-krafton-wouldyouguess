@@ -18,20 +18,16 @@ import org.springframework.web.multipart.MultipartFile;
 public class FindDiffImageService {
     private final AwsS3Service awsS3Service;
     private final GeneratedAiService generateService;
+    private final FindDiffService findDiffService;
 
     @Async
-    @Transactional
     public void uploadS3RequestImage(FindDiffUser user, MultipartFile originalImage, MultipartFile maskingImage) {
         AwsS3 originalS3 = awsS3Service.uploadImageToS3(originalImage, "findDiff_original");
         AwsS3 maskingS3 = awsS3Service.uploadImageToS3(maskingImage, "findDiff_masking");
 
-        user.updateUploadRequestImage(originalS3, maskingS3);
-//        uploadS3RequestImageUrlUpdate(user, originalS3, maskingS3);
+        findDiffService.uploadS3RequestImageUrlUpdate(user, originalS3, maskingS3);
     }
 
-//    public void uploadS3RequestImageUrlUpdate(FindDiffUser user, AwsS3 original, AwsS3 masking) {
-//        user.updateUploadRequestImage(original, masking);
-//    }
 
     public void saveGeneratedAiImage(FindDiffUser user, FindDiffRequest.FindDiffImageUploadRequestDto request) {
         MultipartFile processedAiImage = generateService.processAiImage(

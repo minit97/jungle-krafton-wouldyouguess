@@ -1,5 +1,6 @@
 package com.krafton.api_server.api.game2.service;
 
+import com.krafton.api_server.api.external.vo.AwsS3;
 import com.krafton.api_server.api.game2.domain.FindDiffGame;
 import com.krafton.api_server.api.game2.domain.FindDiffUser;
 import com.krafton.api_server.api.game2.repository.FindDiffGameRepository;
@@ -58,6 +59,11 @@ public class FindDiffService {
         findDiffImageService.saveGeneratedAiImage(user, request);
 
         return FindDiffAiGeneratedImageResponseDto.from(user);
+    }
+
+    @Transactional
+    public void uploadS3RequestImageUrlUpdate(FindDiffUser user, AwsS3 original, AwsS3 masking) {
+        user.updateUploadRequestImage(original, masking);
     }
 
     @Transactional(readOnly = true)
