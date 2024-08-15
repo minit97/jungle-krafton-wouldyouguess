@@ -61,10 +61,6 @@ public class FindDiffService {
         return FindDiffAiGeneratedImageResponseDto.from(user);
     }
 
-    @Transactional
-    public void uploadS3RequestImageUrlUpdate(FindDiffUser user, AwsS3 original, AwsS3 masking) {
-        user.updateUploadRequestImage(original, masking);
-    }
 
     @Transactional(readOnly = true)
     public List<FindDiffGameImagesDto> findDiffGameImages(Long gameId, Long userId) {
