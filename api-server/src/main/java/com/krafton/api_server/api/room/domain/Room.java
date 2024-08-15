@@ -18,7 +18,7 @@ public class Room {
     @Column(name = "room_id")
     private Long id;
 
-    @OneToMany(mappedBy = "room")
+    @OneToMany(mappedBy = "room", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<User> participants = new ArrayList<>();
 
     @Builder

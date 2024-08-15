@@ -1,5 +1,6 @@
 package com.krafton.api_server.api.game1.dto.request;
 
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.web.multipart.MultipartFile;
@@ -7,6 +8,7 @@ import org.springframework.web.multipart.MultipartFile;
 public class CatchLiarRequest {
     @Getter
     @Setter
+    @Builder
     public static class CatchLiarStartRequestDto {
         private Long roomId;
     }
@@ -21,6 +23,7 @@ public class CatchLiarRequest {
 
     @Getter
     @Setter
+    @Builder
     public static class CatchLiarVoteRequestDto {
         private Long catchLiarGameId;
         private Long votingUserId;

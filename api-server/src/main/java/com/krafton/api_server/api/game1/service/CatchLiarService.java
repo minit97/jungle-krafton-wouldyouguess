@@ -127,10 +127,9 @@ public class CatchLiarService {
                         .collect(Collectors.toList());
     }
 
-    public void catchLiarVote(CatchLiarVoteRequestDto request) {
+    public synchronized void catchLiarVote(CatchLiarVoteRequestDto request) {
         CatchLiarGame game = catchLiarGameRepository.findById(request.getCatchLiarGameId())
                                 .orElseThrow(NoSuchElementException::new);
-
         List<CatchLiarUser> catchLiarUsers = game.getCatchLiarUsers();
         CatchLiarUser matchingUser = catchLiarUsers.stream()
                                         .filter(user -> user.getUserId().equals(request.getVotingUserId()))
