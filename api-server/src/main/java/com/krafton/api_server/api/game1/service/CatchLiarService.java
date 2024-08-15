@@ -26,7 +26,6 @@ import java.util.stream.Collectors;
 import static com.krafton.api_server.api.game1.dto.request.CatchLiarRequest.*;
 
 @Slf4j
-@Transactional
 @RequiredArgsConstructor
 @Service
 public class CatchLiarService {
@@ -37,6 +36,7 @@ public class CatchLiarService {
     private final CatchLiarUserRepository catchLiarUserRepository;
     private final AwsS3Service awsS3Service;
 
+    @Transactional
     public Long catchLiarStart(CatchLiarStartRequestDto request) {
         Room room = roomRepository.findById(request.getRoomId())
                 .orElseThrow(NoSuchElementException::new);
@@ -127,6 +127,7 @@ public class CatchLiarService {
                         .collect(Collectors.toList());
     }
 
+    @Transactional
     public synchronized void catchLiarVote(CatchLiarVoteRequestDto request) {
         CatchLiarGame game = catchLiarGameRepository.findById(request.getCatchLiarGameId())
                                 .orElseThrow(NoSuchElementException::new);
@@ -138,6 +139,7 @@ public class CatchLiarService {
         matchingUser.updateVotedCount();
     }
 
+    @Transactional
     public List<CatchLiarResultResponseDto> catchLiarResult(CatchLiarResultRequestDto request) {
         CatchLiarGame game = catchLiarGameRepository.findById(request.getCatchLiarGameId())
                                 .orElseThrow(NoSuchElementException::new);
@@ -167,6 +169,7 @@ public class CatchLiarService {
         return response;
     }
 
+    @Transactional
     public CatchLiarImageResponseDto catchLiarImgS3upload(CatchLiarImageUploadRequestDto request) {
         CatchLiarGame game = catchLiarGameRepository.findById(request.getCatchLiarGameId())
                                 .orElseThrow(NoSuchElementException::new);
@@ -184,6 +187,7 @@ public class CatchLiarService {
     }
 
 
+    @Transactional
     public void catchLiarImgS3Remove(CatchLiarRemoveRequestDto request) {
         awsS3Service.removeImageFromS3(request.getImageKey());
     }

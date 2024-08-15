@@ -54,11 +54,11 @@ class CatchLiarServiceTest {
 
     @AfterEach
     public void after() {
-        userRepository.deleteAll();
-        roomRepository.deleteAll();
-        catchLiarGameRepository.deleteAll();
         catchLiarUserRepository.deleteAll();
+        catchLiarGameRepository.deleteAll();
         catchLiarKeywordRepository.deleteAll();
+        roomRepository.deleteAll();
+        userRepository.deleteAll();
     }
 
 
@@ -87,14 +87,14 @@ class CatchLiarServiceTest {
         // request dto
         CatchLiarVoteRequestDto request = CatchLiarVoteRequestDto.builder()
                 .catchLiarGameId(gameId)
-                .votingUserId(1L)
+                .votingUserId(createdUser.getId())
                 .build();
 
         // when
         catchLiarService.catchLiarVote(request);
 
         // then
-        int totalVoteCnt = tempService.getTotalVoteCnt(1L);
+        int totalVoteCnt = tempService.getTotalVoteCnt(gameId);
         assertEquals(1, totalVoteCnt);
     }
 
@@ -131,7 +131,7 @@ class CatchLiarServiceTest {
                     // request dto
                     CatchLiarVoteRequestDto request = CatchLiarVoteRequestDto.builder()
                             .catchLiarGameId(gameId)
-                            .votingUserId(1L)
+                            .votingUserId(createdUser.getId())
                             .build();
 
                     // when
@@ -146,7 +146,7 @@ class CatchLiarServiceTest {
         latch.await();
 
         // then
-        int totalVoteCnt = tempService.getTotalVoteCnt(1L);
+        int totalVoteCnt = tempService.getTotalVoteCnt(gameId);
         assertEquals(4, totalVoteCnt);
     }
 }
