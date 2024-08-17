@@ -5,6 +5,7 @@ import com.krafton.api_server.api.auth.repository.UserRepository;
 import com.krafton.api_server.api.game1.domain.CatchLiarKeyword;
 import com.krafton.api_server.api.game1.dto.request.CatchLiarRequest;
 import com.krafton.api_server.api.game1.facade.LettuceLockFacade;
+import com.krafton.api_server.api.game1.facade.RedissonLockFacade;
 import com.krafton.api_server.api.game1.repository.CatchLiarGameRepository;
 import com.krafton.api_server.api.game1.repository.CatchLiarKeywordRepository;
 import com.krafton.api_server.api.game1.repository.CatchLiarUserRepository;
@@ -42,6 +43,8 @@ public class CatchLiarServiceWithRedisTest {
     private CatchLiarUserRepository catchLiarUserRepository;
     @Autowired
     private LettuceLockFacade lettuceLockFacade;
+    @Autowired
+    private RedissonLockFacade redissonLockFacade;
 
     @BeforeEach
     public void before() {
@@ -62,7 +65,7 @@ public class CatchLiarServiceWithRedisTest {
     }
 
     @Test
-    @DisplayName("투표 동시성 문제(4명) 테스트 - redis lettuce lock")
+    @DisplayName("투표 동시성 문제(4명) 테스트 - redis lettuce spin lock")
     void 동시에_4명_투표하기_lettuce() throws InterruptedException {
         int threadCount = 4;
         ExecutorService executorService = Executors.newFixedThreadPool(32);
@@ -101,6 +104,58 @@ public class CatchLiarServiceWithRedisTest {
                     lettuceLockFacade.catchLiarVoteLettuce(request);
                 } catch (InterruptedException e) {
                     throw new RuntimeException(e);
+                } finally {
+                    latch.countDown();
+                }
+            });
+
+        }
+
+        latch.await();
+
+        // then
+        int totalVoteCnt = catchLiarUserRepository.findById(createdUser.getId()).get().getVotedCount();
+        assertEquals(4, totalVoteCnt);
+    }
+
+    @Test
+    @DisplayName("투표 동시성 문제(4명) 테스트 - redis redisson pub/sub")
+    void 동시에_4명_투표하기_redisson() throws InterruptedException {
+        int threadCount = 4;
+        ExecutorService executorService = Executors.newFixedThreadPool(32);
+        CountDownLatch latch = new CountDownLatch(threadCount);
+
+        // given
+        // 1. 참가자1 방생성 + 참가자2~3 방참가
+        User createdUser = User.builder().username("User1").nickname("Nick1").build();
+        Room room = Room.builder().user(createdUser).build();
+
+        List<User> joinedUsers = Arrays.asList(
+                User.builder().username("User2").nickname("Nick2").build(),
+                User.builder().username("User3").nickname("Nick3").build(),
+                User.builder().username("User4").nickname("Nick4").build()
+        );
+        joinedUsers.forEach(room::joinRoom);
+
+        Room savedRoom = roomRepository.save(room);
+
+        // 2. 게임 시작
+        CatchLiarRequest.CatchLiarStartRequestDto startedRequest = CatchLiarRequest.CatchLiarStartRequestDto.builder()
+                .roomId(savedRoom.getId()).build();
+        Long gameId = catchLiarService.catchLiarStart(startedRequest);
+
+
+        for (int i = 0; i < threadCount; i ++) {
+            executorService.submit(() -> {
+                try {
+                    // request dto
+                    CatchLiarRequest.CatchLiarVoteRequestDto request = CatchLiarRequest.CatchLiarVoteRequestDto.builder()
+                            .catchLiarGameId(gameId)
+                            .votingUserId(createdUser.getId())
+                            .build();
+
+                    // when
+                    redissonLockFacade.catchLiarVoteRedisson(request);
                 } finally {
                     latch.countDown();
                 }

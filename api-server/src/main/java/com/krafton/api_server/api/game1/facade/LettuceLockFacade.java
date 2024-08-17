@@ -20,7 +20,7 @@ public class LettuceLockFacade {
         }
 
         try {
-            catchLiarService.catchLiarVoteNamedLock(request);
+            catchLiarService.catchLiarVoteForRedis(request);
         } finally {
             redisLockRepository.unlock(request.getCatchLiarGameId());
         }

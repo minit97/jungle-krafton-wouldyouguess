@@ -157,6 +157,13 @@ public class CatchLiarService {
     }
 
     @Transactional
+    public void catchLiarVoteForRedis(CatchLiarVoteRequestDto request) {
+        CatchLiarUser matchingUser = catchLiarUserRepository.findByIdAndCatchLiarGameId(request.getVotingUserId(), request.getCatchLiarGameId())
+                .orElseThrow(NoSuchElementException::new);
+        matchingUser.updateVotedCount();
+    }
+
+    @Transactional
     public List<CatchLiarResultResponseDto> catchLiarResult(CatchLiarResultRequestDto request) {
         CatchLiarGame game = catchLiarGameRepository.findById(request.getCatchLiarGameId())
                                 .orElseThrow(NoSuchElementException::new);
