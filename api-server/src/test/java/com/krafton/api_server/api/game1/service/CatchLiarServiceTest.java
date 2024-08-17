@@ -243,7 +243,7 @@ class CatchLiarServiceTest {
                             .build();
 
                     // when
-                    optimisticLockFacade.retryVoteLogic(request);
+                    optimisticLockFacade.catchLiarVoteOptimisticLock(request);
                 } catch (InterruptedException e) {
                     throw new RuntimeException(e);
                 } finally {
