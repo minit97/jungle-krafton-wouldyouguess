@@ -18,6 +18,7 @@ import com.krafton.api_server.api.room.repository.RoomRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
@@ -145,9 +146,14 @@ public class CatchLiarService {
     public void catchLiarVoteOptimistic(CatchLiarVoteRequestDto request) {
         CatchLiarUser matchingUser = catchLiarUserRepository.findByIdAndCatchLiarGameIdOptimistic(request.getVotingUserId(), request.getCatchLiarGameId())
                 .orElseThrow(NoSuchElementException::new);
-
         matchingUser.updateVotedCount();
-        catchLiarUserRepository.save(matchingUser);
+    }
+
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public void catchLiarVoteNamedLock(CatchLiarVoteRequestDto request) {
+        CatchLiarUser matchingUser = catchLiarUserRepository.findByIdAndCatchLiarGameId(request.getVotingUserId(), request.getCatchLiarGameId())
+                .orElseThrow(NoSuchElementException::new);
+        matchingUser.updateVotedCount();
     }
 
     @Transactional
