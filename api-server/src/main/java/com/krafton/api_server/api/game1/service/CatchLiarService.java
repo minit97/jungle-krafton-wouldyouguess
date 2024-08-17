@@ -141,6 +141,14 @@ public class CatchLiarService {
         matchingUser.updateVotedCount();
     }
 
+    @Transactional
+    public void catchLiarVoteOptimistic(CatchLiarVoteRequestDto request) {
+        CatchLiarUser matchingUser = catchLiarUserRepository.findByIdAndCatchLiarGameIdOptimistic(request.getVotingUserId(), request.getCatchLiarGameId())
+                .orElseThrow(NoSuchElementException::new);
+
+        matchingUser.updateVotedCount();
+        catchLiarUserRepository.save(matchingUser);
+    }
 
     @Transactional
     public List<CatchLiarResultResponseDto> catchLiarResult(CatchLiarResultRequestDto request) {

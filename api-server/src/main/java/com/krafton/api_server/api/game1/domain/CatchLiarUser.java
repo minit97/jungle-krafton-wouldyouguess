@@ -2,14 +2,12 @@ package com.krafton.api_server.api.game1.domain;
 
 import com.krafton.api_server.api.external.vo.AwsS3;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import static jakarta.persistence.FetchType.LAZY;
 
 @Getter
+@AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 public class CatchLiarUser {
@@ -36,6 +34,9 @@ public class CatchLiarUser {
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "catch_liar_game_id")
     private CatchLiarGame catchLiarGame;
+
+    @Version
+    private Long version;
 
     @Builder
     public CatchLiarUser(Long userId, Boolean isLiar, String keyword, Integer drawOrder, String userColor) {

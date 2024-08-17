@@ -18,4 +18,7 @@ public interface CatchLiarUserRepository extends JpaRepository<CatchLiarUser, Lo
     @Query("SELECT clu FROM CatchLiarUser clu WHERE clu.id = :id AND clu.catchLiarGame.id = :gameId")
     Optional<CatchLiarUser> findByIdAndCatchLiarGameIdPessimistic(@Param("id") Long id, @Param("gameId") Long gameId);
 
+    @Lock(LockModeType.OPTIMISTIC)
+    @Query("SELECT clu FROM CatchLiarUser clu WHERE clu.id = :id AND clu.catchLiarGame.id = :gameId")
+    Optional<CatchLiarUser> findByIdAndCatchLiarGameIdOptimistic(@Param("id") Long id, @Param("gameId") Long gameId);
 }
