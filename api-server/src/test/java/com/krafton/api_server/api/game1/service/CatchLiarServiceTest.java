@@ -41,7 +41,7 @@ class CatchLiarServiceTest {
     @Autowired
     private CatchLiarUserRepository catchLiarUserRepository;
     @Autowired
-    private TransactionalService tempService;
+    private OptimisticLockService optimisticLockService;
 
     @BeforeEach
     public void before() {
@@ -94,13 +94,13 @@ class CatchLiarServiceTest {
         catchLiarService.catchLiarVote(request);
 
         // then
-        int totalVoteCnt = tempService.getTotalVoteCnt(gameId);
+        int totalVoteCnt = catchLiarUserRepository.findById(createdUser.getId()).get().getVotedCount();
         assertEquals(1, totalVoteCnt);
     }
 
     @Test
-    @DisplayName("투표 동시성 문제(4명) 테스트")
-    void 동시에_4명_투표하기() throws InterruptedException {
+    @DisplayName("투표 동시성 문제(4명) 테스트 - synchronized")
+    void 동시에_4명_투표하기_sync() throws InterruptedException {
         int threadCount = 4;
         ExecutorService executorService = Executors.newFixedThreadPool(32);
         CountDownLatch latch = new CountDownLatch(threadCount);
@@ -146,7 +146,60 @@ class CatchLiarServiceTest {
         latch.await();
 
         // then
-        int totalVoteCnt = tempService.getTotalVoteCnt(gameId);
+        int totalVoteCnt = catchLiarUserRepository.findById(createdUser.getId()).get().getVotedCount();
         assertEquals(4, totalVoteCnt);
     }
+
+    @Test
+    @DisplayName("투표 동시성 문제(4명) 테스트 - pessimistic lock")
+    void 동시에_4명_투표하기_pessimistic() throws InterruptedException {
+        int threadCount = 4;
+        ExecutorService executorService = Executors.newFixedThreadPool(32);
+        CountDownLatch latch = new CountDownLatch(threadCount);
+
+        // given
+        // 1. 참가자1 방생성 + 참가자2~3 방참가
+        User createdUser = User.builder().username("User1").nickname("Nick1").build();
+        Room room = Room.builder().user(createdUser).build();
+
+        List<User> joinedUsers = Arrays.asList(
+                User.builder().username("User2").nickname("Nick2").build(),
+                User.builder().username("User3").nickname("Nick3").build(),
+                User.builder().username("User4").nickname("Nick4").build()
+        );
+        joinedUsers.forEach(room::joinRoom);
+
+        Room savedRoom = roomRepository.save(room);
+
+        // 2. 게임 시작
+        CatchLiarStartRequestDto startedRequest = CatchLiarStartRequestDto.builder()
+                .roomId(savedRoom.getId()).build();
+        Long gameId = catchLiarService.catchLiarStart(startedRequest);
+
+
+        for (int i = 0; i < threadCount; i ++) {
+            executorService.submit(() -> {
+                try {
+                    // request dto
+                    CatchLiarVoteRequestDto request = CatchLiarVoteRequestDto.builder()
+                            .catchLiarGameId(gameId)
+                            .votingUserId(createdUser.getId())
+                            .build();
+
+                    // when
+                    catchLiarService.catchLiarVotePessimistic(request);
+                } finally {
+                    latch.countDown();
+                }
+            });
+
+        }
+
+        latch.await();
+
+        // then
+        int totalVoteCnt = catchLiarUserRepository.findById(createdUser.getId()).get().getVotedCount();
+        assertEquals(4, totalVoteCnt);
+    }
+
 }

@@ -127,12 +127,20 @@ public class CatchLiarService {
                         .collect(Collectors.toList());
     }
 
-    @Transactional
     public synchronized void catchLiarVote(CatchLiarVoteRequestDto request) {
         CatchLiarUser matchingUser = catchLiarUserRepository.findByIdAndCatchLiarGameId(request.getVotingUserId(), request.getCatchLiarGameId())
                 .orElseThrow(NoSuchElementException::new);
         matchingUser.updateVotedCount();
+        catchLiarUserRepository.save(matchingUser);
     }
+
+    @Transactional
+    public void catchLiarVotePessimistic(CatchLiarVoteRequestDto request) {
+        CatchLiarUser matchingUser = catchLiarUserRepository.findByIdAndCatchLiarGameIdPessimistic(request.getVotingUserId(), request.getCatchLiarGameId())
+                .orElseThrow(NoSuchElementException::new);
+        matchingUser.updateVotedCount();
+    }
+
 
     @Transactional
     public List<CatchLiarResultResponseDto> catchLiarResult(CatchLiarResultRequestDto request) {
