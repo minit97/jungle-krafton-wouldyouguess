@@ -1,5 +1,6 @@
-package com.krafton.api_server.api.game1.service;
+package com.krafton.api_server.api.game1.facade;
 
+import com.krafton.api_server.api.game1.service.CatchLiarService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
