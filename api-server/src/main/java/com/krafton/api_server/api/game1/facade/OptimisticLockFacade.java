@@ -13,7 +13,7 @@ import static com.krafton.api_server.api.game1.dto.request.CatchLiarRequest.Catc
 public class OptimisticLockFacade {
     private final CatchLiarService catchLiarService;
 
-    public void retryVoteLogic(CatchLiarVoteRequestDto request) throws InterruptedException {
+    public void catchLiarVoteOptimisticLock(CatchLiarVoteRequestDto request) throws InterruptedException {
         while (true) {
             try {
                 catchLiarService.catchLiarVoteOptimistic(request);
